@@ -1,0 +1,97 @@
+# ============================================
+# Entornos Virtuales (CRÍTICO: No subir a Git)
+# ============================================
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ============================================
+# Datos Pesados (Archivos y Datasets)
+# ============================================
+data/
+*.csv.gz
+*.parquet
+*.feather
+
+# ============================================
+# Modelos Serializados y Binarios Pesados
+# ============================================
+models/*.pkl
+models/*.joblib
+models/*.bin
+models/*.onnx
+models/*.pt
+models/*.pth
+models/*.h5
+!models/.gitkeep
+
+# ============================================
+# Python / Cache / Compilados
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ============================================
+# Jupyter Notebooks Checkpoints
+# ============================================
+.ipynb_checkpoints/
+
+# ============================================
+# Variables de Entorno y Secretos
+# ============================================
+.env
+.env.local
+.env.*.local
+
+# ============================================
+# Logs y Temporales
+# ============================================
+*.log
+pip-log.txt
+pip-delete-this-directory.txt
+storage/*
+!storage/.gitkeep
+
+# ============================================
+# Pruebas y Cobertura
+# ============================================
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.pytest_cache/
+.mypy_cache/
+
+# ============================================
+# IDEs y Editores
+# ============================================
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+.spyproject/
