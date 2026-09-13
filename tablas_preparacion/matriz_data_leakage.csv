@@ -1,0 +1,21 @@
+﻿Variable,Categoria,Decision,Motivo
+Temperatura_Proceso,Predictora Operativa,Utilizada,"Variable física clave del proceso térmico, disponible en tiempo real."
+Vibracion_Equipo,Predictora Operativa,Utilizada,Indicador directo de desbalance mecánico y desgaste de rodamientos.
+Presion_Sistema,Predictora Operativa,Utilizada,Mide sobrepresión o caídas en circuitos hidráulicos y de refrigeración.
+Corriente_Motor,Predictora Operativa,Utilizada,Refleja sobrecarga eléctrica y resistencia mecánica del accionamiento.
+Caudal_Proceso,Predictora Operativa,Utilizada,Monitorea la fluidez y entrega volumétrica en líneas de producción.
+Nivel_Sistema,Predictora Operativa,Utilizada,Supervisa niveles de tolvas y depósitos de enfriamiento.
+Velocidad_Accionamiento,Predictora Operativa,Utilizada,Registra régimen de rotación y estabilidad de velocidad.
+Horas_Operacion,Predictora Operativa,Utilizada,Variable acumulativa de uso previo al momento de predicción.
+Tipo_Equipo,Predictora Contextual,Utilizada (Codificada),Aporta contexto funcional sobre el comportamiento de cada familia de máquina.
+Proceso,Predictora Contextual,Utilizada (Codificada),"Contexto del proceso productivo (Congelación, Envasado, etc.)."
+Línea,Predictora Contextual,Utilizada (Codificada),Línea de producción donde opera el equipo.
+Criticidad,Predictora Contextual,Utilizada (Codificada Ordinal),"Jerarquía de criticidad operacional (Baja=0, Media=1, Alta=2)."
+Identificador_Equipo,Identificador,Descartada,Identificador único. Su inclusión causaría memorización y sobreajuste.
+Codigo_Equipo_Origen,Identificador,Descartada,Código alfanumérico identificador específico del equipo.
+Nombre_Equipo,Identificador,Descartada,Texto descriptivo que identifica directamente al equipo.
+Fecha_Observacion,Control Temporal,Descartada como predictor,Utilizada exclusivamente para ordenar y dividir cronológicamente los conjuntos.
+Tiene_Horizonte_Completo_Siete_Dias,Metadato de Control,Descartada,Indicador de soporte utilizado para filtrar las 203 filas sin horizonte completo.
+Conjunto_Temporal,Metadato de Partición,Descartada como predictor,Etiqueta original de partición temporal (Train/Valid/Test).
+"Variables de hechos_fallas.csv (Costo, Duracion, Causa)",Información Post-Evento,Descartada por Data Leakage,Ocurren con posterioridad a la falla. Usarlas como predictor crearía fuga directa.
+Falla_En_Los_Siguientes_Siete_Dias,Variable Objetivo (Target),Definida como Target (y),Etiqueta supervisada a predecir a 7 días de horizonte.
