@@ -1,12 +1,4 @@
-# Sistema Predictivo de Probabilidad de Falla en Equipos Industriales (Área de Helados)
-
-[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
-[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.3+-orange.svg)](https://scikit-learn.org/)
-[![Pandas](https://img.shields.io/badge/pandas-2.0+-150458.svg)](https://pandas.pydata.org/)
-[![MLOps Architecture](https://img.shields.io/badge/Architecture-Modular%20Services-green.svg)](#)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-
----
+# Proyecto Final: Predicción de Fallas en Equipos Industriales (Área de Helados)
 
 ## 📌 Descripción del Proyecto
 
@@ -17,23 +9,14 @@ Este repositorio contiene la solución técnica integral para el proyecto de Cie
 
 El sistema está diseñado bajo una **arquitectura desacoplada y profesional de microservicios MLOps**, garantizando reproducibilidad estricta, prevención total de fuga de información (*Data Leakage*) y partición temporal cronológica.
 
----
 
-## 🚀 Guía de Inicio Rápido
-
-### 1. Clonar el repositorio
-```bash
-git clone https://github.com/Erick-Quiroz/Proyecto-DIPLOMADO-CIENCIA-DE-DATOS.git
-cd Proyecto-DIPLOMADO-CIENCIA-DE-DATOS
-```
-
-### 2. Configurar el Entorno Virtual (`.venv`)
+### 1. Configurar el Entorno Virtual (`.venv`)
 ```bash
 # Crear y aprovisionar el entorno unificado automáticamente
 python scripts/setup_environment.py --mode unified
 ```
 
-### 3. Activar el Entorno Virtual
+### 2. Activar el Entorno Virtual
 
 - **En Windows (PowerShell):**
   ```powershell
@@ -50,7 +33,7 @@ python scripts/setup_environment.py --mode unified
 
 ---
 
-## ⚡ Comandos de Ejecución y Salidas
+##  Comandos de Ejecución y Salidas
 
 | Flujo / Servicio | Comando | Salidas Principales |
 | :--- | :--- | :--- |
@@ -61,7 +44,7 @@ python scripts/setup_environment.py --mode unified
 
 ---
 
-## 📊 Metodología y Preparación de Datos (Fase 7.3)
+##  Metodología y Preparación de Datos (Fase 7.3)
 
 ```
 [Datos Crudos: observaciones_diarias] (17,719 filas)
@@ -82,14 +65,14 @@ python scripts/setup_environment.py --mode unified
    └── Prueba (Test)         :  2,436 registros (13.91%) |   310 fallas (12.73%) [2026-06-05 a 2026-08-27]
 ```
 
-### 🔒 Prevención de Data Leakage
+### Prevención de Data Leakage
 - **Variables descartadas como predictores:** `Identificador_Equipo`, `Codigo_Equipo_Origen`, `Nombre_Equipo` (evitan memorización y sobreajuste).
 - **Información post-evento descartada:** Variables de costos, causas y paradas de `hechos_fallas.csv`.
 - **Ajuste de transformadores:** Todos los codificadores y escaladores se ajustan exclusivamente sobre el conjunto de Entrenamiento.
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```text
 Proyecto-DIPLOMADO-CIENCIA-DE-DATOS/
@@ -118,8 +101,10 @@ Proyecto-DIPLOMADO-CIENCIA-DE-DATOS/
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
+- **Plantilla Base:** [Cookiecutter Data Science](https://drivendata.github.io/cookiecutter-data-science/)
+- **Arquitectura:** Microservicios Modulares desacoplados (MLOps)
 - **Lenguaje:** Python 3.12
 - **Procesamiento de Datos:** Pandas, NumPy
 - **Machine Learning & Pipeline:** Scikit-Learn
@@ -129,7 +114,7 @@ Proyecto-DIPLOMADO-CIENCIA-DE-DATOS/
 
 ---
 
-## 👤 Autor
+## Autor
 
 - **Erick Quiroz** - [GitHub Profile](https://github.com/Erick-Quiroz)
 - **Diplomado en Ciencia de Datos Aplicada**
