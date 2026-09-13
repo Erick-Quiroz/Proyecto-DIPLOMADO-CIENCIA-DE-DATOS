@@ -1,0 +1,211 @@
+﻿Archivo,Variable,Valor,Frecuencia
+diccionario_datos.csv,Archivo,observaciones_diarias_equipo.csv,19
+diccionario_datos.csv,Archivo,hechos_mediciones_sensores.csv,16
+diccionario_datos.csv,Archivo,hechos_ordenes_trabajo_correctivas.csv,13
+diccionario_datos.csv,Archivo,dim_equipos.csv,13
+diccionario_datos.csv,Archivo,hechos_revisiones_equipos.csv,11
+diccionario_datos.csv,Archivo,dim_sensores.csv,11
+diccionario_datos.csv,Archivo,hechos_fallas.csv,10
+diccionario_datos.csv,Archivo,hechos_ordenes_trabajo.csv,10
+diccionario_datos.csv,Archivo,hechos_consumos.csv,9
+diccionario_datos.csv,Archivo,hechos_alertas.csv,8
+diccionario_datos.csv,Archivo,hechos_horario_tecnico.csv,6
+diccionario_datos.csv,Archivo,relaciones_entidades.csv,5
+diccionario_datos.csv,Archivo,dim_turnos.csv,4
+diccionario_datos.csv,Archivo,dim_tecnicos.csv,4
+diccionario_datos.csv,Archivo,lista_equipos_origen.csv,1
+diccionario_datos.csv,Tipo_Dato,object,112
+diccionario_datos.csv,Tipo_Dato,int64,14
+diccionario_datos.csv,Tipo_Dato,float64,13
+diccionario_datos.csv,Tipo_Dato,bool,1
+dim_equipos.csv,Tipo_Equipo,Congelador industrial,3
+dim_equipos.csv,Tipo_Equipo,Túnel de congelación,3
+dim_equipos.csv,Tipo_Equipo,Homogeneizador,3
+dim_equipos.csv,Tipo_Equipo,Pasteurizador,3
+dim_equipos.csv,Tipo_Equipo,Mezclador industrial,3
+dim_equipos.csv,Tipo_Equipo,Compresor de refrigeración,2
+dim_equipos.csv,Tipo_Equipo,Bomba de circulación,2
+dim_equipos.csv,Tipo_Equipo,Dosificadora de helado,2
+dim_equipos.csv,Tipo_Equipo,Envasadora automática,2
+dim_equipos.csv,Tipo_Equipo,Selladora de envases,2
+dim_equipos.csv,Tipo_Equipo,Transportador de producto,2
+dim_equipos.csv,Tipo_Equipo,Cámara frigorífica,2
+dim_equipos.csv,Área,Área de Helados,29
+dim_equipos.csv,Proceso,Preparación,9
+dim_equipos.csv,Proceso,Envasado,8
+dim_equipos.csv,Proceso,Congelación,6
+dim_equipos.csv,Proceso,Refrigeración,4
+dim_equipos.csv,Proceso,Almacenamiento,2
+dim_equipos.csv,Línea,Línea de Helados 01,8
+dim_equipos.csv,Línea,Línea de Helados 02,7
+dim_equipos.csv,Línea,Línea de Helados 03,7
+dim_equipos.csv,Línea,Línea de Helados 04,7
+dim_equipos.csv,Centro,Centro de Producción de Helados,29
+dim_equipos.csv,Criticidad,Alta,12
+dim_equipos.csv,Criticidad,Media,12
+dim_equipos.csv,Criticidad,Baja,5
+dim_equipos.csv,Estado_Actual,Operativo,29
+dim_equipos.csv,Fabricante,Fabricante Industrial 01,5
+dim_equipos.csv,Fabricante,Fabricante Industrial 02,4
+dim_equipos.csv,Fabricante,Fabricante Industrial 03,4
+dim_equipos.csv,Fabricante,Fabricante Industrial 04,4
+dim_equipos.csv,Fabricante,Fabricante Industrial 05,4
+dim_equipos.csv,Fabricante,Fabricante Industrial 06,4
+dim_equipos.csv,Fabricante,Fabricante Industrial 07,4
+dim_equipos.csv,Modelo,Modelo 01,4
+dim_equipos.csv,Modelo,Modelo 02,4
+dim_equipos.csv,Modelo,Modelo 03,3
+dim_equipos.csv,Modelo,Modelo 04,3
+dim_equipos.csv,Modelo,Modelo 05,3
+dim_equipos.csv,Modelo,Modelo 06,3
+dim_equipos.csv,Modelo,Modelo 07,3
+dim_equipos.csv,Modelo,Modelo 08,3
+dim_equipos.csv,Modelo,Modelo 09,3
+dim_sensores.csv,Nombre_Sensor,Sensor de vibración del equipo,29
+dim_sensores.csv,Nombre_Sensor,Sensor de corriente del motor,29
+dim_sensores.csv,Nombre_Sensor,Sensor de velocidad del accionamiento,29
+dim_sensores.csv,Nombre_Sensor,Sensor de nivel del sistema,29
+dim_sensores.csv,Nombre_Sensor,Sensor de horas de operación,29
+dim_sensores.csv,Nombre_Sensor,Sensor de presión del sistema de preparación,9
+dim_sensores.csv,Nombre_Sensor,Sensor de caudal de preparación,9
+dim_sensores.csv,Nombre_Sensor,Sensor de temperatura de preparación,9
+dim_sensores.csv,Nombre_Sensor,Sensor de caudal de envasado,8
+dim_sensores.csv,Nombre_Sensor,Sensor de presión del sistema de envasado,8
+dim_sensores.csv,Nombre_Sensor,Sensor de temperatura de envasado,8
+dim_sensores.csv,Nombre_Sensor,Sensor de temperatura de congelación,6
+dim_sensores.csv,Nombre_Sensor,Sensor de presión del sistema de congelación,6
+dim_sensores.csv,Nombre_Sensor,Sensor de caudal de congelación,6
+dim_sensores.csv,Nombre_Sensor,Sensor de temperatura de refrigeración,4
+dim_sensores.csv,Nombre_Sensor,Sensor de caudal de refrigeración,4
+dim_sensores.csv,Nombre_Sensor,Sensor de presión del sistema de refrigeración,4
+dim_sensores.csv,Nombre_Sensor,Sensor de temperatura de almacenamiento,2
+dim_sensores.csv,Nombre_Sensor,Sensor de presión del sistema de almacenamiento,2
+dim_sensores.csv,Nombre_Sensor,Sensor de caudal de almacenamiento,2
+dim_sensores.csv,Tipo_Sensor,Sensor de temperatura de proceso,29
+dim_sensores.csv,Tipo_Sensor,Sensor de vibración,29
+dim_sensores.csv,Tipo_Sensor,Sensor de presión,29
+dim_sensores.csv,Tipo_Sensor,Sensor de corriente,29
+dim_sensores.csv,Tipo_Sensor,Sensor de caudal,29
+dim_sensores.csv,Tipo_Sensor,Sensor de nivel,29
+dim_sensores.csv,Tipo_Sensor,Sensor de velocidad,29
+dim_sensores.csv,Tipo_Sensor,Sensor de horas de operación,29
+dim_sensores.csv,Caracteristica,Temperatura del producto y del circuito térmico,29
+dim_sensores.csv,Caracteristica,"Vibración del motor, bomba o transmisión",29
+dim_sensores.csv,Caracteristica,Presión del circuito de refrigeración o proceso,29
+dim_sensores.csv,Caracteristica,Demanda eléctrica del motor principal,29
+dim_sensores.csv,Caracteristica,Flujo del producto en la etapa del proceso,29
+dim_sensores.csv,Caracteristica,Nivel del depósito o circuito asociado,29
+dim_sensores.csv,Caracteristica,Velocidad de giro del conjunto motriz,29
+dim_sensores.csv,Caracteristica,Horas acumuladas de funcionamiento,29
+dim_sensores.csv,Unidad_Medida,°C,29
+dim_sensores.csv,Unidad_Medida,mm/s,29
+dim_sensores.csv,Unidad_Medida,bar,29
+dim_sensores.csv,Unidad_Medida,A,29
+dim_sensores.csv,Unidad_Medida,L/min,29
+dim_sensores.csv,Unidad_Medida,%,29
+dim_sensores.csv,Unidad_Medida,rpm,29
+dim_sensores.csv,Unidad_Medida,h,29
+dim_sensores.csv,Importancia,Alta,87
+dim_sensores.csv,Importancia,Media,87
+dim_sensores.csv,Importancia,Baja,58
+dim_sensores.csv,Frecuencia_Medicion,Diaria,232
+dim_sensores.csv,Proceso_Monitoreado,Preparación,72
+dim_sensores.csv,Proceso_Monitoreado,Envasado,64
+dim_sensores.csv,Proceso_Monitoreado,Congelación,48
+dim_sensores.csv,Proceso_Monitoreado,Refrigeración,32
+dim_sensores.csv,Proceso_Monitoreado,Almacenamiento,16
+hechos_fallas.csv,Tipo_Falla,Falla del accionamiento,55
+hechos_fallas.csv,Tipo_Falla,Desviación de temperatura,48
+hechos_fallas.csv,Tipo_Falla,Desalineación mecánica,35
+hechos_fallas.csv,Tipo_Falla,Falla de bombeo,33
+hechos_fallas.csv,Tipo_Falla,Falla del agitador,26
+hechos_fallas.csv,Tipo_Falla,Falla del sistema de envasado,25
+hechos_fallas.csv,Tipo_Falla,Falla del sistema de congelación,18
+hechos_fallas.csv,Tipo_Falla,Sobrepresión del circuito,15
+hechos_fallas.csv,Tipo_Falla,Fuga de refrigerante,12
+hechos_fallas.csv,Tipo_Falla,Falla del compresor,11
+hechos_fallas.csv,Severidad,Alta,132
+hechos_fallas.csv,Severidad,Media,110
+hechos_fallas.csv,Severidad,Crítica,36
+hechos_fallas.csv,Causa_Probable,Variación térmica,54
+hechos_fallas.csv,Causa_Probable,Obstrucción,51
+hechos_fallas.csv,Causa_Probable,Sobrecarga,46
+hechos_fallas.csv,Causa_Probable,Desajuste,46
+hechos_fallas.csv,Causa_Probable,Lubricación insuficiente,44
+hechos_fallas.csv,Causa_Probable,Desgaste,37
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de vibración del equipo,17719
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de corriente del motor,17719
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de velocidad del accionamiento,17719
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de nivel del sistema,17719
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de horas de operación,17719
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de presión del sistema de preparación,5499
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de caudal de preparación,5499
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de temperatura de preparación,5499
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de caudal de envasado,4888
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de presión del sistema de envasado,4888
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de temperatura de envasado,4888
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de temperatura de congelación,3666
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de presión del sistema de congelación,3666
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de caudal de congelación,3666
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de temperatura de refrigeración,2444
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de caudal de refrigeración,2444
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de presión del sistema de refrigeración,2444
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de temperatura de almacenamiento,1222
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de presión del sistema de almacenamiento,1222
+hechos_mediciones_sensores.csv,Nombre_Sensor,Sensor de caudal de almacenamiento,1222
+hechos_mediciones_sensores.csv,Tipo_Sensor,Sensor de temperatura de proceso,17719
+hechos_mediciones_sensores.csv,Tipo_Sensor,Sensor de vibración,17719
+hechos_mediciones_sensores.csv,Tipo_Sensor,Sensor de presión,17719
+hechos_mediciones_sensores.csv,Tipo_Sensor,Sensor de corriente,17719
+hechos_mediciones_sensores.csv,Tipo_Sensor,Sensor de caudal,17719
+hechos_mediciones_sensores.csv,Tipo_Sensor,Sensor de nivel,17719
+hechos_mediciones_sensores.csv,Tipo_Sensor,Sensor de velocidad,17719
+hechos_mediciones_sensores.csv,Tipo_Sensor,Sensor de horas de operación,17719
+hechos_mediciones_sensores.csv,Caracteristica,Temperatura del producto y del circuito térmico,17719
+hechos_mediciones_sensores.csv,Caracteristica,"Vibración del motor, bomba o transmisión",17719
+hechos_mediciones_sensores.csv,Caracteristica,Presión del circuito de refrigeración o proceso,17719
+hechos_mediciones_sensores.csv,Caracteristica,Demanda eléctrica del motor principal,17719
+hechos_mediciones_sensores.csv,Caracteristica,Flujo del producto en la etapa del proceso,17719
+hechos_mediciones_sensores.csv,Caracteristica,Nivel del depósito o circuito asociado,17719
+hechos_mediciones_sensores.csv,Caracteristica,Velocidad de giro del conjunto motriz,17719
+hechos_mediciones_sensores.csv,Caracteristica,Horas acumuladas de funcionamiento,17719
+hechos_mediciones_sensores.csv,Unidad_Medida,°C,17719
+hechos_mediciones_sensores.csv,Unidad_Medida,mm/s,17719
+hechos_mediciones_sensores.csv,Unidad_Medida,bar,17719
+hechos_mediciones_sensores.csv,Unidad_Medida,A,17719
+hechos_mediciones_sensores.csv,Unidad_Medida,L/min,17719
+hechos_mediciones_sensores.csv,Unidad_Medida,%,17719
+hechos_mediciones_sensores.csv,Unidad_Medida,rpm,17719
+hechos_mediciones_sensores.csv,Unidad_Medida,h,17719
+hechos_mediciones_sensores.csv,Turno,Turno mañana,110952
+hechos_mediciones_sensores.csv,Turno,Turno tarde,27728
+hechos_mediciones_sensores.csv,Turno,Turno nocturno,3072
+hechos_mediciones_sensores.csv,Calidad_Medicion,Válida,130402
+hechos_mediciones_sensores.csv,Calidad_Medicion,Revisar,11350
+observaciones_diarias_equipo.csv,Tipo_Equipo,Pasteurizador,1833
+observaciones_diarias_equipo.csv,Tipo_Equipo,Congelador industrial,1833
+observaciones_diarias_equipo.csv,Tipo_Equipo,Mezclador industrial,1833
+observaciones_diarias_equipo.csv,Tipo_Equipo,Homogeneizador,1833
+observaciones_diarias_equipo.csv,Tipo_Equipo,Túnel de congelación,1833
+observaciones_diarias_equipo.csv,Tipo_Equipo,Envasadora automática,1222
+observaciones_diarias_equipo.csv,Tipo_Equipo,Bomba de circulación,1222
+observaciones_diarias_equipo.csv,Tipo_Equipo,Dosificadora de helado,1222
+observaciones_diarias_equipo.csv,Tipo_Equipo,Compresor de refrigeración,1222
+observaciones_diarias_equipo.csv,Tipo_Equipo,Cámara frigorífica,1222
+observaciones_diarias_equipo.csv,Tipo_Equipo,Transportador de producto,1222
+observaciones_diarias_equipo.csv,Tipo_Equipo,Selladora de envases,1222
+observaciones_diarias_equipo.csv,Proceso,Preparación,5499
+observaciones_diarias_equipo.csv,Proceso,Envasado,4888
+observaciones_diarias_equipo.csv,Proceso,Congelación,3666
+observaciones_diarias_equipo.csv,Proceso,Refrigeración,2444
+observaciones_diarias_equipo.csv,Proceso,Almacenamiento,1222
+observaciones_diarias_equipo.csv,Línea,Línea de Helados 01,4888
+observaciones_diarias_equipo.csv,Línea,Línea de Helados 04,4277
+observaciones_diarias_equipo.csv,Línea,Línea de Helados 03,4277
+observaciones_diarias_equipo.csv,Línea,Línea de Helados 02,4277
+observaciones_diarias_equipo.csv,Criticidad,Media,7332
+observaciones_diarias_equipo.csv,Criticidad,Alta,7332
+observaciones_diarias_equipo.csv,Criticidad,Baja,3055
+observaciones_diarias_equipo.csv,Conjunto_Temporal,Entrenamiento,12412
+observaciones_diarias_equipo.csv,Conjunto_Temporal,Validacion,2668
+observaciones_diarias_equipo.csv,Conjunto_Temporal,Prueba,2639

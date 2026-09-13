@@ -1,0 +1,20 @@
+﻿Variable,Decisión,Justificación
+Identificador_Equipo,REVISAR,Identificación o categoría; requiere codificación o exclusión
+Codigo_Equipo_Origen,REVISAR,Identificación o categoría; requiere codificación o exclusión
+Nombre_Equipo,REVISAR,Identificación o categoría; requiere codificación o exclusión
+Tipo_Equipo,CANDIDATA,Información disponible al cierre de la observación
+Proceso,CANDIDATA,Información disponible al cierre de la observación
+Línea,CANDIDATA,Información disponible al cierre de la observación
+Criticidad,CANDIDATA,Información disponible al cierre de la observación
+Fecha_Observacion,REVISAR,Puede transformarse en variables temporales sin usar información futura
+Temperatura_Proceso,CANDIDATA,Información disponible al cierre de la observación
+Vibracion_Equipo,CANDIDATA,Información disponible al cierre de la observación
+Presion_Sistema,CANDIDATA,Información disponible al cierre de la observación
+Corriente_Motor,CANDIDATA,Información disponible al cierre de la observación
+Caudal_Proceso,CANDIDATA,Información disponible al cierre de la observación
+Nivel_Sistema,CANDIDATA,Información disponible al cierre de la observación
+Velocidad_Accionamiento,CANDIDATA,Información disponible al cierre de la observación
+Horas_Operacion,CANDIDATA,Información disponible al cierre de la observación
+Falla_En_Los_Siguientes_Siete_Dias,EXCLUIR,Variable objetivo del modelo
+Tiene_Horizonte_Completo_Siete_Dias,CONTROL,Variable metodológica; no debe utilizarse como predictor
+Conjunto_Temporal,CONTROL,Variable metodológica; no debe utilizarse como predictor

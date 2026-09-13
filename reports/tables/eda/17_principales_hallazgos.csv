@@ -1,0 +1,10 @@
+﻿Hallazgo
+La variable con mayor proporción de valores faltantes es Falla_En_Los_Siguientes_Siete_Dias con 1.15%.
+Se detectaron 0 registros completamente duplicados.
+La mayor proporción de posibles valores atípicos según el criterio IQR corresponde a Presion_Sistema (6.49%).
+"El conjunto de datos estructurado bajo la unidad de análisis Equipo-Día contiene 17,719 observaciones y 19 variables."
+Se identificaron 29 equipos.
+El período de observación comprende desde 2025-01-01 hasta 2026-09-03.
+"La variable objetivo presenta 15,570 observaciones con valor 0, 1,946 con valor 1 y 203 sin etiqueta."
+El registro histórico contiene 278 eventos de falla.
+"El proceso con mayor cantidad de eventos de falla es Preparación, con 87 eventos (31.29%)."

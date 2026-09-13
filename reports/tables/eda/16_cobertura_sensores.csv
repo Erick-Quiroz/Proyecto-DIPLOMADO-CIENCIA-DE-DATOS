@@ -1,0 +1,233 @@
+﻿Identificador_Sensor,Tipo_Sensor,Nombre_Sensor,Identificador_Equipo,Cantidad_Mediciones
+1047667,Sensor de presión,Sensor de presión del sistema de congelación,678284,611
+1052680,Sensor de velocidad,Sensor de velocidad del accionamiento,296570,611
+1241271,Sensor de horas de operación,Sensor de horas de operación,398119,611
+1285652,Sensor de vibración,Sensor de vibración del equipo,564024,611
+1309808,Sensor de nivel,Sensor de nivel del sistema,887319,611
+1322081,Sensor de horas de operación,Sensor de horas de operación,887319,611
+1327626,Sensor de caudal,Sensor de caudal de congelación,279116,611
+1347362,Sensor de corriente,Sensor de corriente del motor,565977,611
+1382313,Sensor de caudal,Sensor de caudal de preparación,355455,611
+1394887,Sensor de velocidad,Sensor de velocidad del accionamiento,435609,611
+1405505,Sensor de corriente,Sensor de corriente del motor,251669,611
+1415655,Sensor de velocidad,Sensor de velocidad del accionamiento,195979,611
+1448228,Sensor de vibración,Sensor de vibración del equipo,279116,611
+1474127,Sensor de nivel,Sensor de nivel del sistema,355293,611
+1478414,Sensor de caudal,Sensor de caudal de preparación,195979,611
+1635917,Sensor de presión,Sensor de presión del sistema de envasado,564024,611
+1656252,Sensor de caudal,Sensor de caudal de refrigeración,398119,611
+1658921,Sensor de temperatura de proceso,Sensor de temperatura de congelación,512413,611
+1666557,Sensor de vibración,Sensor de vibración del equipo,195979,611
+1850897,Sensor de presión,Sensor de presión del sistema de envasado,692733,611
+1917447,Sensor de vibración,Sensor de vibración del equipo,521462,611
+1933877,Sensor de presión,Sensor de presión del sistema de preparación,965317,611
+1959791,Sensor de corriente,Sensor de corriente del motor,291860,611
+2002301,Sensor de horas de operación,Sensor de horas de operación,512413,611
+2013021,Sensor de presión,Sensor de presión del sistema de congelación,683583,611
+2017252,Sensor de corriente,Sensor de corriente del motor,692733,611
+2042013,Sensor de horas de operación,Sensor de horas de operación,674210,611
+2076578,Sensor de nivel,Sensor de nivel del sistema,683583,611
+2158713,Sensor de horas de operación,Sensor de horas de operación,600108,611
+2186246,Sensor de horas de operación,Sensor de horas de operación,692733,611
+2195301,Sensor de nivel,Sensor de nivel del sistema,921626,611
+2219125,Sensor de presión,Sensor de presión del sistema de envasado,716342,611
+2240547,Sensor de horas de operación,Sensor de horas de operación,965317,611
+2343595,Sensor de horas de operación,Sensor de horas de operación,287136,611
+2450445,Sensor de horas de operación,Sensor de horas de operación,355293,611
+2479792,Sensor de caudal,Sensor de caudal de congelación,921626,611
+2507139,Sensor de vibración,Sensor de vibración del equipo,716342,611
+2516690,Sensor de temperatura de proceso,Sensor de temperatura de envasado,692733,611
+2526835,Sensor de caudal,Sensor de caudal de preparación,251669,611
+2574367,Sensor de vibración,Sensor de vibración del equipo,600108,611
+2625794,Sensor de presión,Sensor de presión del sistema de congelación,921626,611
+2646438,Sensor de velocidad,Sensor de velocidad del accionamiento,921626,611
+2721651,Sensor de temperatura de proceso,Sensor de temperatura de envasado,355293,611
+2756091,Sensor de temperatura de proceso,Sensor de temperatura de envasado,716342,611
+2791167,Sensor de caudal,Sensor de caudal de congelación,683583,611
+2833955,Sensor de caudal,Sensor de caudal de envasado,564024,611
+2871334,Sensor de presión,Sensor de presión del sistema de envasado,887319,611
+2918605,Sensor de corriente,Sensor de corriente del motor,398119,611
+2965695,Sensor de corriente,Sensor de corriente del motor,279116,611
+2974197,Sensor de horas de operación,Sensor de horas de operación,716342,611
+2989853,Sensor de velocidad,Sensor de velocidad del accionamiento,922480,611
+2995358,Sensor de presión,Sensor de presión del sistema de envasado,565977,611
+3041271,Sensor de nivel,Sensor de nivel del sistema,716342,611
+3052066,Sensor de temperatura de proceso,Sensor de temperatura de congelación,678284,611
+3084119,Sensor de vibración,Sensor de vibración del equipo,769755,611
+3132858,Sensor de vibración,Sensor de vibración del equipo,355293,611
+3139520,Sensor de velocidad,Sensor de velocidad del accionamiento,355455,611
+3167694,Sensor de presión,Sensor de presión del sistema de preparación,287136,611
+3176563,Sensor de temperatura de proceso,Sensor de temperatura de refrigeración,460500,611
+3208439,Sensor de nivel,Sensor de nivel del sistema,468365,611
+3248671,Sensor de velocidad,Sensor de velocidad del accionamiento,965317,611
+3286215,Sensor de temperatura de proceso,Sensor de temperatura de envasado,922480,611
+3360281,Sensor de corriente,Sensor de corriente del motor,922480,611
+3371099,Sensor de nivel,Sensor de nivel del sistema,287136,611
+3390497,Sensor de vibración,Sensor de vibración del equipo,468365,611
+3443336,Sensor de corriente,Sensor de corriente del motor,600108,611
+3487199,Sensor de corriente,Sensor de corriente del motor,512413,611
+3490218,Sensor de vibración,Sensor de vibración del equipo,296570,611
+3552896,Sensor de temperatura de proceso,Sensor de temperatura de envasado,565977,611
+3554502,Sensor de corriente,Sensor de corriente del motor,287136,611
+3560544,Sensor de vibración,Sensor de vibración del equipo,887319,611
+3576760,Sensor de nivel,Sensor de nivel del sistema,965317,611
+3636287,Sensor de temperatura de proceso,Sensor de temperatura de almacenamiento,769755,611
+3686916,Sensor de temperatura de proceso,Sensor de temperatura de preparación,291860,611
+3719615,Sensor de velocidad,Sensor de velocidad del accionamiento,564024,611
+3750473,Sensor de vibración,Sensor de vibración del equipo,375045,611
+3768784,Sensor de caudal,Sensor de caudal de envasado,887319,611
+3833646,Sensor de vibración,Sensor de vibración del equipo,921626,611
+3882037,Sensor de vibración,Sensor de vibración del equipo,692733,611
+3981158,Sensor de nivel,Sensor de nivel del sistema,564024,611
+4088228,Sensor de temperatura de proceso,Sensor de temperatura de preparación,251669,611
+4129813,Sensor de caudal,Sensor de caudal de refrigeración,460500,611
+4180400,Sensor de velocidad,Sensor de velocidad del accionamiento,769755,611
+4252748,Sensor de corriente,Sensor de corriente del motor,564024,611
+4284324,Sensor de nivel,Sensor de nivel del sistema,355455,611
+4312766,Sensor de temperatura de proceso,Sensor de temperatura de preparación,355455,611
+4319169,Sensor de horas de operación,Sensor de horas de operación,279116,611
+4333834,Sensor de presión,Sensor de presión del sistema de refrigeración,600108,611
+4356054,Sensor de nivel,Sensor de nivel del sistema,195979,611
+4361537,Sensor de corriente,Sensor de corriente del motor,965317,611
+4412429,Sensor de presión,Sensor de presión del sistema de preparación,355455,611
+4467126,Sensor de horas de operación,Sensor de horas de operación,291860,611
+4468150,Sensor de vibración,Sensor de vibración del equipo,683583,611
+4524550,Sensor de horas de operación,Sensor de horas de operación,355455,611
+4583332,Sensor de presión,Sensor de presión del sistema de envasado,922480,611
+4590205,Sensor de caudal,Sensor de caudal de refrigeración,521462,611
+4605001,Sensor de presión,Sensor de presión del sistema de refrigeración,521462,611
+4616218,Sensor de caudal,Sensor de caudal de preparación,291860,611
+4683431,Sensor de temperatura de proceso,Sensor de temperatura de preparación,195979,611
+4683643,Sensor de presión,Sensor de presión del sistema de congelación,279116,611
+4693538,Sensor de caudal,Sensor de caudal de envasado,296570,611
+4696907,Sensor de corriente,Sensor de corriente del motor,355293,611
+4704141,Sensor de temperatura de proceso,Sensor de temperatura de congelación,279116,611
+4707463,Sensor de presión,Sensor de presión del sistema de refrigeración,460500,611
+4791515,Sensor de corriente,Sensor de corriente del motor,460500,611
+4798241,Sensor de nivel,Sensor de nivel del sistema,600108,611
+4818436,Sensor de caudal,Sensor de caudal de envasado,692733,611
+4940026,Sensor de corriente,Sensor de corriente del motor,468365,611
+5000549,Sensor de vibración,Sensor de vibración del equipo,922480,611
+5003483,Sensor de temperatura de proceso,Sensor de temperatura de congelación,785030,611
+5014707,Sensor de presión,Sensor de presión del sistema de preparación,435609,611
+5040390,Sensor de horas de operación,Sensor de horas de operación,769755,611
+5124058,Sensor de corriente,Sensor de corriente del motor,921626,611
+5147293,Sensor de nivel,Sensor de nivel del sistema,769755,611
+5214561,Sensor de nivel,Sensor de nivel del sistema,375045,611
+5217810,Sensor de nivel,Sensor de nivel del sistema,296570,611
+5270605,Sensor de caudal,Sensor de caudal de preparación,375045,611
+5339973,Sensor de presión,Sensor de presión del sistema de congelación,785030,611
+5381084,Sensor de caudal,Sensor de caudal de congelación,512413,611
+5480867,Sensor de velocidad,Sensor de velocidad del accionamiento,600108,611
+5505340,Sensor de vibración,Sensor de vibración del equipo,287136,611
+5530077,Sensor de vibración,Sensor de vibración del equipo,251669,611
+5555066,Sensor de corriente,Sensor de corriente del motor,683583,611
+5562455,Sensor de nivel,Sensor de nivel del sistema,251669,611
+5640170,Sensor de presión,Sensor de presión del sistema de preparación,375045,611
+5659716,Sensor de presión,Sensor de presión del sistema de preparación,291860,611
+5680721,Sensor de presión,Sensor de presión del sistema de preparación,251669,611
+5724211,Sensor de nivel,Sensor de nivel del sistema,460500,611
+5733926,Sensor de nivel,Sensor de nivel del sistema,512413,611
+5783127,Sensor de corriente,Sensor de corriente del motor,678284,611
+5806244,Sensor de velocidad,Sensor de velocidad del accionamiento,355293,611
+5816224,Sensor de caudal,Sensor de caudal de preparación,674210,611
+5816935,Sensor de nivel,Sensor de nivel del sistema,521462,611
+5864781,Sensor de presión,Sensor de presión del sistema de envasado,355293,611
+5913943,Sensor de corriente,Sensor de corriente del motor,296570,611
+5921295,Sensor de nivel,Sensor de nivel del sistema,291860,611
+5988782,Sensor de vibración,Sensor de vibración del equipo,435609,611
+5990604,Sensor de velocidad,Sensor de velocidad del accionamiento,375045,611
+6000555,Sensor de horas de operación,Sensor de horas de operación,921626,611
+6001045,Sensor de corriente,Sensor de corriente del motor,521462,611
+6262116,Sensor de nivel,Sensor de nivel del sistema,279116,611
+6293072,Sensor de horas de operación,Sensor de horas de operación,922480,611
+6311164,Sensor de temperatura de proceso,Sensor de temperatura de congelación,921626,611
+6334756,Sensor de velocidad,Sensor de velocidad del accionamiento,785030,611
+6433976,Sensor de caudal,Sensor de caudal de preparación,435609,611
+6522292,Sensor de vibración,Sensor de vibración del equipo,512413,611
+6610189,Sensor de horas de operación,Sensor de horas de operación,678284,611
+6615251,Sensor de corriente,Sensor de corriente del motor,674210,611
+6686809,Sensor de caudal,Sensor de caudal de envasado,716342,611
+6696849,Sensor de vibración,Sensor de vibración del equipo,291860,611
+6711030,Sensor de velocidad,Sensor de velocidad del accionamiento,287136,611
+6728302,Sensor de velocidad,Sensor de velocidad del accionamiento,674210,611
+6742086,Sensor de temperatura de proceso,Sensor de temperatura de envasado,887319,611
+6782788,Sensor de velocidad,Sensor de velocidad del accionamiento,251669,611
+6806378,Sensor de velocidad,Sensor de velocidad del accionamiento,887319,611
+6835855,Sensor de corriente,Sensor de corriente del motor,887319,611
+6863597,Sensor de caudal,Sensor de caudal de envasado,565977,611
+6923279,Sensor de velocidad,Sensor de velocidad del accionamiento,683583,611
+6926792,Sensor de temperatura de proceso,Sensor de temperatura de preparación,287136,611
+6927228,Sensor de nivel,Sensor de nivel del sistema,435609,611
+6940921,Sensor de temperatura de proceso,Sensor de temperatura de refrigeración,600108,611
+6979689,Sensor de nivel,Sensor de nivel del sistema,398119,611
+6979948,Sensor de horas de operación,Sensor de horas de operación,565977,611
+6987830,Sensor de horas de operación,Sensor de horas de operación,296570,611
+7007921,Sensor de presión,Sensor de presión del sistema de almacenamiento,468365,611
+7135714,Sensor de horas de operación,Sensor de horas de operación,785030,611
+7155480,Sensor de presión,Sensor de presión del sistema de preparación,674210,611
+7163367,Sensor de horas de operación,Sensor de horas de operación,375045,611
+7224853,Sensor de temperatura de proceso,Sensor de temperatura de refrigeración,521462,611
+7237776,Sensor de temperatura de proceso,Sensor de temperatura de preparación,435609,611
+7389370,Sensor de caudal,Sensor de caudal de refrigeración,600108,611
+7438807,Sensor de caudal,Sensor de caudal de envasado,922480,611
+7480286,Sensor de temperatura de proceso,Sensor de temperatura de preparación,965317,611
+7610475,Sensor de caudal,Sensor de caudal de preparación,965317,611
+7697415,Sensor de presión,Sensor de presión del sistema de congelación,512413,611
+7718256,Sensor de caudal,Sensor de caudal de almacenamiento,468365,611
+7795776,Sensor de nivel,Sensor de nivel del sistema,692733,611
+7850314,Sensor de temperatura de proceso,Sensor de temperatura de congelación,683583,611
+7896761,Sensor de corriente,Sensor de corriente del motor,435609,611
+7936755,Sensor de velocidad,Sensor de velocidad del accionamiento,521462,611
+7947371,Sensor de temperatura de proceso,Sensor de temperatura de preparación,375045,611
+7949540,Sensor de horas de operación,Sensor de horas de operación,460500,611
+7952619,Sensor de velocidad,Sensor de velocidad del accionamiento,468365,611
+7969450,Sensor de vibración,Sensor de vibración del equipo,565977,611
+7993645,Sensor de velocidad,Sensor de velocidad del accionamiento,692733,611
+8043924,Sensor de nivel,Sensor de nivel del sistema,674210,611
+8124930,Sensor de caudal,Sensor de caudal de congelación,678284,611
+8153751,Sensor de horas de operación,Sensor de horas de operación,521462,611
+8173464,Sensor de presión,Sensor de presión del sistema de almacenamiento,769755,611
+8227137,Sensor de temperatura de proceso,Sensor de temperatura de refrigeración,398119,611
+8240270,Sensor de presión,Sensor de presión del sistema de refrigeración,398119,611
+8240716,Sensor de vibración,Sensor de vibración del equipo,674210,611
+8256689,Sensor de horas de operación,Sensor de horas de operación,683583,611
+8291442,Sensor de velocidad,Sensor de velocidad del accionamiento,460500,611
+8306520,Sensor de velocidad,Sensor de velocidad del accionamiento,716342,611
+8453028,Sensor de horas de operación,Sensor de horas de operación,251669,611
+8479041,Sensor de velocidad,Sensor de velocidad del accionamiento,678284,611
+8480052,Sensor de nivel,Sensor de nivel del sistema,678284,611
+8567596,Sensor de velocidad,Sensor de velocidad del accionamiento,398119,611
+8590309,Sensor de caudal,Sensor de caudal de preparación,287136,611
+8599722,Sensor de temperatura de proceso,Sensor de temperatura de envasado,296570,611
+8640617,Sensor de corriente,Sensor de corriente del motor,716342,611
+8702029,Sensor de corriente,Sensor de corriente del motor,355455,611
+8705455,Sensor de corriente,Sensor de corriente del motor,785030,611
+8739812,Sensor de horas de operación,Sensor de horas de operación,435609,611
+8829825,Sensor de vibración,Sensor de vibración del equipo,355455,611
+8841737,Sensor de vibración,Sensor de vibración del equipo,785030,611
+8873242,Sensor de presión,Sensor de presión del sistema de envasado,296570,611
+8953530,Sensor de horas de operación,Sensor de horas de operación,195979,611
+8972012,Sensor de vibración,Sensor de vibración del equipo,965317,611
+9041026,Sensor de vibración,Sensor de vibración del equipo,678284,611
+9110677,Sensor de velocidad,Sensor de velocidad del accionamiento,279116,611
+9116888,Sensor de corriente,Sensor de corriente del motor,769755,611
+9135099,Sensor de presión,Sensor de presión del sistema de preparación,195979,611
+9195182,Sensor de velocidad,Sensor de velocidad del accionamiento,512413,611
+9196627,Sensor de caudal,Sensor de caudal de congelación,785030,611
+9216204,Sensor de caudal,Sensor de caudal de envasado,355293,611
+9224810,Sensor de temperatura de proceso,Sensor de temperatura de almacenamiento,468365,611
+9477435,Sensor de corriente,Sensor de corriente del motor,375045,611
+9487717,Sensor de nivel,Sensor de nivel del sistema,785030,611
+9570913,Sensor de temperatura de proceso,Sensor de temperatura de envasado,564024,611
+9574184,Sensor de corriente,Sensor de corriente del motor,195979,611
+9591265,Sensor de caudal,Sensor de caudal de almacenamiento,769755,611
+9635553,Sensor de nivel,Sensor de nivel del sistema,922480,611
+9636971,Sensor de velocidad,Sensor de velocidad del accionamiento,565977,611
+9653217,Sensor de horas de operación,Sensor de horas de operación,564024,611
+9668794,Sensor de velocidad,Sensor de velocidad del accionamiento,291860,611
+9669157,Sensor de horas de operación,Sensor de horas de operación,468365,611
+9759188,Sensor de temperatura de proceso,Sensor de temperatura de preparación,674210,611
+9778073,Sensor de vibración,Sensor de vibración del equipo,398119,611
+9907785,Sensor de vibración,Sensor de vibración del equipo,460500,611
+9985531,Sensor de nivel,Sensor de nivel del sistema,565977,611

@@ -1,0 +1,7 @@
+﻿Archivo,Registros,Variables
+diccionario_datos.csv,140,5
+dim_equipos.csv,29,13
+dim_sensores.csv,232,11
+hechos_fallas.csv,278,10
+hechos_mediciones_sensores.csv,141752,16
+observaciones_diarias_equipo.csv,17719,19

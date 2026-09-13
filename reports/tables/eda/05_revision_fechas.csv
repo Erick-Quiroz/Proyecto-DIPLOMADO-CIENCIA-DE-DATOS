@@ -1,0 +1,6 @@
+﻿Archivo,Variable,Convertibles,No_Convertibles,Minimo,Maximo
+hechos_fallas.csv,Fecha_Falla,278,0,2025-01-31 00:00:00.000000000,2026-08-25 00:00:00.000000000
+hechos_mediciones_sensores.csv,Fecha_Observacion,141752,0,2025-01-01 00:00:00.000000000,2026-09-03 00:00:00.000000000
+hechos_mediciones_sensores.csv,Fecha_Hora_Medicion,141752,0,2025-01-01 07:00:00.000000000,2026-09-03 15:00:00.000000000
+observaciones_diarias_equipo.csv,Fecha_Observacion,17719,0,2025-01-01 00:00:00.000000000,2026-09-03 00:00:00.000000000
+observaciones_diarias_equipo.csv,Horas_Operacion,17719,0,1970-01-01 00:00:00.000005103,1970-01-01 00:00:00.000025385
