@@ -50,6 +50,12 @@ services:
       PROJECT_ROOT: /app
       API_URL: http://api:8502
       API_BASE_URL: http://api:8502
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+      DVC_S3_ENDPOINT: ${DVC_S3_ENDPOINT}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_BUCKET: ${MINIO_BUCKET}
     depends_on:
       api:
         condition: service_healthy
@@ -60,7 +66,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
+      start_period: 15s
 
 networks:
   app-network:
