@@ -16,7 +16,7 @@ services:
     container_name: predictive-maintenance-api
     restart: unless-stopped
     ports:
-      - "${API_PORT:-8000}:8000"
+      - "${API_PORT:-8502}:8502"
     environment:
       PROJECT_ROOT: /app
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
@@ -28,7 +28,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8502/health"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -48,8 +48,8 @@ services:
       - "${STREAMLIT_PORT:-8501}:8501"
     environment:
       PROJECT_ROOT: /app
-      API_URL: http://api:8000
-      API_BASE_URL: http://api:8000
+      API_URL: http://api:8502
+      API_BASE_URL: http://api:8502
     depends_on:
       api:
         condition: service_healthy

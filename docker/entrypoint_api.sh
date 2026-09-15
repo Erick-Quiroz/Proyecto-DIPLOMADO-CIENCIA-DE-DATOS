@@ -7,5 +7,5 @@ if [ ! -f "models/modelo_random_forest.joblib" ]; then
     dvc pull models/modelo_random_forest.joblib.dvc || true
 fi
 
-# Iniciar servidor FastAPI
-exec uvicorn services.api.main:app --host 0.0.0.0 --port 8000
+# Iniciar servidor FastAPI en el puerto 8502
+exec uvicorn services.api.main:app --host 0.0.0.0 --port 8502

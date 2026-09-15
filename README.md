@@ -122,7 +122,7 @@ El sistema cuenta con una arquitectura de despliegue desacoplada lista para prod
                                     │  HTTP / JSON
                                     ▼
                          ┌──────────────────────┐
-                         │  FASTAPI (Port 8000) │  → Backend API REST
+                         │  FASTAPI (Port 8502) │  → Backend API REST
                          │  /health             │
                          │  /models             │
                          │  /predict            │
@@ -142,15 +142,15 @@ Para levantar el sistema completo se ejecutan dos procesos concurrentes:
 
 ```bash
 # Terminal 1: Iniciar Backend API REST (FastAPI)
-uvicorn services.api.main:app --reload --port 8000
+uvicorn services.api.main:app --reload --port 8502
 
 # Terminal 2: Iniciar Frontend Web (Streamlit)
 streamlit run services/dashboard/app.py
 ```
 
 * **Frontend Streamlit:** [http://localhost:8501](http://localhost:8501)
-* **Backend API REST:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
-* **Documentación Interactiva (Swagger UI):** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+* **Backend API REST:** [http://127.0.0.1:8502](http://127.0.0.1:8502)
+* **Documentación Interactiva (Swagger UI):** [http://127.0.0.1:8502/docs](http://127.0.0.1:8502/docs)
 
 ### Endpoints Principales de la API
 
@@ -178,7 +178,7 @@ El sistema implementa una arquitectura reproducible y modular de microservicios 
                     │    STREAMLIT DASHBOARD    │
                     │   (docker/dashboard)      │
                     └─────────────┬─────────────┘
-                                  │ HTTP (:8000) [API_URL=http://api:8000]
+                                  │ HTTP (:8502) [API_URL=http://api:8502]
                                   ▼
                     ┌───────────────────────────┐
                     │     FASTAPI INFERENCE     │
@@ -208,7 +208,7 @@ El sistema implementa una arquitectura reproducible y modular de microservicios 
                     ┌───────────────────────────┐
                     │       MINIO STORAGE       │
                     │       (minio:9000)        │
-                    │    Bucket: dvc-storage    │
+                    │    Bucket: diplomado      │
                     └───────────────────────────┘
 ```
 
@@ -242,27 +242,28 @@ Configura los valores correspondientes en `.env` (las credenciales nunca se sube
 # MinIO S3 Storage
 MINIO_ROOT_USER=admin_helados
 MINIO_ROOT_PASSWORD=<TU_CONTRASENA_SEGURA>
-MINIO_BUCKET=dvc-storage
-MINIO_ENDPOINT=http://minio:9000
+MINIO_BUCKET=diplomado
+MINIO_ENDPOINT=http://diplomado-minio-45370e-147-93-118-204.traefik.me
+MINIO_CONSOLE_URL=http://diplomado-minio-9804d4-147-93-118-204.traefik.me
 MINIO_API_PORT=9000
 MINIO_CONSOLE_PORT=9001
 
 # DVC S3 Credentials
-AWS_ACCESS_KEY_ID=admin_helados
-AWS_SECRET_ACCESS_KEY=<TU_CONTRASENA_SEGURA>
+AWS_ACCESS_KEY_ID=<TU_ACCESS_KEY>
+AWS_SECRET_ACCESS_KEY=<TU_SECRET_KEY>
 AWS_DEFAULT_REGION=us-east-1
-DVC_S3_ENDPOINT=http://localhost:9000
+DVC_S3_ENDPOINT=http://diplomado-minio-45370e-147-93-118-204.traefik.me
 
 # Backend FastAPI
 API_HOST=0.0.0.0
-API_PORT=8000
+API_PORT=8502
 PROJECT_ROOT=.
 
 # Frontend Streamlit
 STREAMLIT_HOST=0.0.0.0
 STREAMLIT_PORT=8501
-API_URL=http://api:8000
-API_BASE_URL=http://api:8000
+API_URL=http://api:8502
+API_BASE_URL=http://api:8502
 ```
 
 ### 4. Configuración y Operaciones con DVC y MinIO
@@ -272,8 +273,8 @@ API_BASE_URL=http://api:8000
 dvc init
 
 # 2. Configurar remote S3 apuntando a MinIO
-dvc remote add -d minio s3://dvc-storage
-dvc remote modify minio endpointurl http://localhost:9000
+dvc remote add -d minio s3://diplomado
+dvc remote modify minio endpointurl http://diplomado-minio-45370e-147-93-118-204.traefik.me
 
 # 3. Comprobar estado del remote
 dvc remote list
@@ -288,11 +289,9 @@ dvc push
 
 ### 5. Despliegue con Docker Compose
 
-El archivo `docker-compose.yml` orquesta cuatro servicios interconectados:
-1. `minio`: Almacenamiento S3 de objetos persistente en `minio_data`.
-2. `minio-init`: Inicialización automática e idempotente del bucket `dvc-storage`.
-3. `api`: Inferencia con FastAPI escuchando en `0.0.0.0:8000`.
-4. `dashboard`: Interfaz gráfica Streamlit escuchando en `0.0.0.0:8501`.
+El archivo `docker-compose.yml` orquesta los microservicios interconectados:
+1. `api`: Inferencia con FastAPI escuchando en `0.0.0.0:8502`.
+2. `dashboard`: Interfaz gráfica Streamlit escuchando en `0.0.0.0:8501`.
 
 #### Comandos de Docker Compose
 
@@ -321,10 +320,10 @@ docker compose down -v
 | Servicio | URL Local | Descripción |
 | :--- | :--- | :--- |
 | **Streamlit Dashboard** | [http://localhost:8501](http://localhost:8501) | Dashboard interactivo de diagnóstico predictivo y monitoreo |
-| **FastAPI Root Info** | [http://localhost:8000](http://localhost:8000) | Metadatos del microservicio de inferencia |
-| **FastAPI Health Check** | [http://localhost:8000/health](http://localhost:8000/health) | Estado operativo y modelo activo |
-| **FastAPI Swagger UI** | [http://localhost:8000/docs](http://localhost:8000/docs) | Documentación interactiva OpenAPI / Swagger |
-| **FastAPI Redoc** | [http://localhost:8000/redoc](http://localhost:8000/redoc) | Documentación estructurada Redoc |
+| **FastAPI Root Info** | [http://localhost:8502](http://localhost:8502) | Metadatos del microservicio de inferencia |
+| **FastAPI Health Check** | [http://localhost:8502/health](http://localhost:8502/health) | Estado operativo y modelo activo |
+| **FastAPI Swagger UI** | [http://localhost:8502/docs](http://localhost:8502/docs) | Documentación interactiva OpenAPI / Swagger |
+| **FastAPI Redoc** | [http://localhost:8502/redoc](http://localhost:8502/redoc) | Documentación estructurada Redoc |
 | **MinIO S3 API** | [http://localhost:9000](http://localhost:9000) | Endpoint S3 compatible para DVC y almacenamiento |
 | **MinIO Web Console** | [http://localhost:9001](http://localhost:9001) | Consola gráfica de administración de buckets y objetos |
 

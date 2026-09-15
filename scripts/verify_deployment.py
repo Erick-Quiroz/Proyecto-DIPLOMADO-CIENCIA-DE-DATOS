@@ -10,15 +10,17 @@ def verify_all():
     print("VERIFICACIÓN DE MICROSERVICIOS EN PRODUCCIÓN (DOCKER COMPOSE)")
     print("=" * 65)
 
+    api_port = "8502"
+
     # 1. Healthcheck FastAPI
-    with urllib.request.urlopen("http://localhost:8000/health") as resp:
+    with urllib.request.urlopen(f"http://localhost:{api_port}/health") as resp:
         data = json.loads(resp.read().decode())
-        print(f"✓ 1. Healthcheck FastAPI (/health): Status={data['status']}, Modelo={data['active_model']}")
+        print(f"✓ 1. Healthcheck FastAPI (/health en :{api_port}): Status={data['status']}, Modelo={data['active_model']}")
         assert data["status"] == "ok"
         assert data["active_model"] == "modelo_random_forest.joblib"
 
     # 2. Catálogo de Modelos
-    with urllib.request.urlopen("http://localhost:8000/models") as resp:
+    with urllib.request.urlopen(f"http://localhost:{api_port}/models") as resp:
         data = json.loads(resp.read().decode())
         print(f"✓ 2. Catálogo (/models): {len(data['models'])} modelos disponibles en runtime")
         assert len(data["models"]) >= 3
@@ -29,7 +31,7 @@ def verify_all():
     payload = json.dumps({"equipo": "EQ-195979", "features": features_dict}).encode("utf-8")
 
     req = urllib.request.Request(
-        "http://localhost:8000/predict",
+        f"http://localhost:{api_port}/predict",
         data=payload,
         headers={"Content-Type": "application/json"},
     )
@@ -43,8 +45,8 @@ def verify_all():
         assert 0.0 <= data["probabilidad_falla_7_dias"] <= 1.0
 
     # 4. Documentación OpenAPI / Swagger
-    with urllib.request.urlopen("http://localhost:8000/docs") as resp:
-        print(f"✓ 4. Swagger UI (/docs): HTTP {resp.status} OK")
+    with urllib.request.urlopen(f"http://localhost:{api_port}/docs") as resp:
+        print(f"✓ 4. Swagger UI (/docs en :{api_port}): HTTP {resp.status} OK")
         assert resp.status == 200
 
     # 5. Streamlit Health

@@ -39,9 +39,9 @@ COPY results/ /app/results/
 COPY docker/entrypoint_api.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
-EXPOSE 8000
+EXPOSE 8502
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+    CMD curl -f http://localhost:8502/health || exit 1
 
 ENTRYPOINT ["/app/entrypoint.sh"]
