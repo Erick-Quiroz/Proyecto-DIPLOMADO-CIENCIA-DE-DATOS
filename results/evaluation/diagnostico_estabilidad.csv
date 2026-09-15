@@ -1,0 +1,10 @@
+﻿id_modelo,modelo,particion,n_registros,tasa_positiva_pct,accuracy_pct,precision_pct,recall_pct,f1_score_pct,roc_auc_pct
+regresion_logistica,Regresión Logística,Train,12412,10.66,96.04,73.61,98.03,84.08,99.37
+regresion_logistica,Regresión Logística,Valid,2668,11.73,95.16,71.5,97.76,82.59,99.11
+regresion_logistica,Regresión Logística,Test,2436,12.73,94.87,71.56,99.03,83.09,99.29
+random_forest,Random Forest,Train,12412,10.66,97.08,78.52,100.0,87.97,99.94
+random_forest,Random Forest,Valid,2668,11.73,95.46,72.97,97.44,83.45,99.12
+random_forest,Random Forest,Test,2436,12.73,95.2,72.71,99.68,84.08,99.13
+xgboost,XGBoost,Train,12412,10.66,99.55,97.6,98.19,97.89,99.99
+xgboost,XGBoost,Valid,2668,11.73,96.96,86.02,88.5,87.24,99.34
+xgboost,XGBoost,Test,2436,12.73,97.21,86.01,93.23,89.47,99.33
