@@ -1,0 +1,5 @@
+﻿Fecha,Equipo,ID_Equipo,Tipo_Equipo,Línea,Modelo,Probabilidad,Probabilidad (%),Riesgo,Prediccion_Clase,Estado
+2026-09-15 10:06:25,Bomba de circulación 07,EQ-398119,Bomba de circulación,Línea de Helados 03,Random Forest (modelo_random_forest.joblib),0.0642,6.42 %,Bajo,0,Normal
+2026-09-15 10:08:50,Bomba de circulación 07,EQ-398119,Bomba de circulación,Línea de Helados 03,Random Forest (modelo_random_forest.joblib),0.0642,6.42 %,Bajo,0,Normal
+2026-09-15 10:09:16,Bomba de circulación 07,EQ-398119,Bomba de circulación,Línea de Helados 03,Regresión Logística (modelo_regresion_logistica.joblib),0.0,0.00 %,Bajo,0,Normal
+2026-09-15 10:09:28,Bomba de circulación 07,EQ-398119,Bomba de circulación,Línea de Helados 03,XGBoost (modelo_xgboost.joblib),0.009,0.90 %,Bajo,0,Normal

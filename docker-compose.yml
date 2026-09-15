@@ -1,0 +1,68 @@
+# =====================================================================
+# DOCKER COMPOSE: Mantenimiento Predictivo - Área de Helados
+# Microservicios: FastAPI (Inferencia) & Streamlit (Dashboard)
+# Integración con MinIO en la nube y DVC mediante variables de entorno .env
+# =====================================================================
+
+services:
+  # -------------------------------------------------------------------
+  # 1. FastAPI: Microservicio de Inferencia Predictiva
+  # -------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    image: predictive-maintenance-api:latest
+    container_name: predictive-maintenance-api
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-8000}:8000"
+    environment:
+      PROJECT_ROOT: /app
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+      DVC_S3_ENDPOINT: ${DVC_S3_ENDPOINT}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  # -------------------------------------------------------------------
+  # 2. Streamlit: Microservicio de Dashboard y Monitoreo Industrial
+  # -------------------------------------------------------------------
+  dashboard:
+    build:
+      context: .
+      dockerfile: docker/dashboard/Dockerfile
+    image: predictive-maintenance-dashboard:latest
+    container_name: predictive-maintenance-dashboard
+    restart: unless-stopped
+    ports:
+      - "${STREAMLIT_PORT:-8501}:8501"
+    environment:
+      PROJECT_ROOT: /app
+      API_URL: http://api:8000
+      API_BASE_URL: http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+networks:
+  app-network:
+    name: predictive_maintenance_network
+    driver: bridge

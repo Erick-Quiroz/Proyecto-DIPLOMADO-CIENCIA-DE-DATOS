@@ -101,16 +101,244 @@ Proyecto-DIPLOMADO-CIENCIA-DE-DATOS/
 
 ---
 
+---
+
+## Fase 7.6: Despliegue (FastAPI + Streamlit)
+
+El sistema cuenta con una arquitectura de despliegue desacoplada lista para producción:
+
+```
+                    USUARIO (Operador / Data Scientist)
+                                    │
+                                    ▼
+                         ┌──────────────────────┐
+                         │ STREAMLIT (Port 8501)│  → Frontend Web
+                         │ - Inicio             │
+                         │ - Predicción en vivo │
+                         │ - Historial          │
+                         │ - Análisis           │
+                         │ - Laboratorio        │
+                         └──────────┬───────────┘
+                                    │  HTTP / JSON
+                                    ▼
+                         ┌──────────────────────┐
+                         │  FASTAPI (Port 8000) │  → Backend API REST
+                         │  /health             │
+                         │  /models             │
+                         │  /predict            │
+                         │  /models/set-active  │
+                         └──────────┬───────────┘
+                                    │  predict_proba()
+                                    ▼
+                         ┌──────────────────────┐
+                         │   MODELO ML ACTIVO   │  → Random Forest (7.5)
+                         │   (o Laboratorio)    │
+                         └──────────────────────┘
+```
+
+### Ejecución del Sistema
+
+Para levantar el sistema completo se ejecutan dos procesos concurrentes:
+
+```bash
+# Terminal 1: Iniciar Backend API REST (FastAPI)
+uvicorn services.api.main:app --reload --port 8000
+
+# Terminal 2: Iniciar Frontend Web (Streamlit)
+streamlit run services/dashboard/app.py
+```
+
+* **Frontend Streamlit:** [http://localhost:8501](http://localhost:8501)
+* **Backend API REST:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
+* **Documentación Interactiva (Swagger UI):** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+### Endpoints Principales de la API
+
+| Método | Endpoint | Descripción |
+| :--- | :--- | :--- |
+| `GET` | `/health` | Comprobación de salud del servicio y modelo activo |
+| `GET` | `/models` | Lista de modelos serializados (producción y laboratorio) |
+| `GET` | `/models/active` | Consulta el modelo actualmente activo |
+| `POST` | `/predict` | Inferencia de probabilidad continua en 7 días y nivel de riesgo con validación de 44 variables |
+| `POST` | `/models/set-active` | Promueve dinámicamente un modelo nuevo al servicio de producción |
+
+---
+
+## Despliegue e Infraestructura MLOps (Docker, MinIO, DVC, FastAPI, Streamlit)
+
+El sistema implementa una arquitectura reproducible y modular de microservicios contenerizados y versionamiento de datos/modelos:
+
+```
+                    ┌───────────────────────────┐
+                    │     USUARIO / OPERARIO    │
+                    └─────────────┬─────────────┘
+                                  │ HTTP (:8501)
+                                  ▼
+                    ┌───────────────────────────┐
+                    │    STREAMLIT DASHBOARD    │
+                    │   (docker/dashboard)      │
+                    └─────────────┬─────────────┘
+                                  │ HTTP (:8000) [API_URL=http://api:8000]
+                                  ▼
+                    ┌───────────────────────────┐
+                    │     FASTAPI INFERENCE     │
+                    │       (docker/api)        │
+                    └─────────────┬─────────────┘
+                                  │ predict_proba()
+                                  ▼
+                    ┌───────────────────────────┐
+                    │    RANDOM FOREST MODEL    │
+                    │ modelo_random_forest.joblib│
+                    └───────────────────────────┘
+
+        VERSIONAMIENTO Y ALMACENAMIENTO DE DATOS Y MODELOS
+
+                    ┌───────────────────────────┐
+                    │            GIT            │
+                    │ (Metadatos, código, .dvc) │
+                    └─────────────┬─────────────┘
+                                  │
+                                  ▼
+                    ┌───────────────────────────┐
+                    │            DVC            │
+                    │  (data.dvc, models.dvc)   │
+                    └─────────────┬─────────────┘
+                                  │ Protocolo S3
+                                  ▼
+                    ┌───────────────────────────┐
+                    │       MINIO STORAGE       │
+                    │       (minio:9000)        │
+                    │    Bucket: dvc-storage    │
+                    └───────────────────────────┘
+```
+
+### 1. Requisitos Previos
+
+- **Git** >= 2.30
+- **Python** 3.12+ (con gestor `pip` y entorno virtual)
+- **Docker** >= 24.0 y **Docker Compose** >= 2.20
+- **DVC con soporte S3** (`dvc[s3]`)
+
+### 2. Instalación de DVC con Soporte S3
+
+Para gestionar el versionamiento de datos y modelos vinculados a MinIO S3:
+
+```bash
+python -m pip install "dvc[s3]"
+dvc --version
+```
+
+### 3. Configuración del Archivo de Variables de Entorno (`.env`)
+
+Copia la plantilla de configuración `.env.example` para crear tu archivo local `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Configura los valores correspondientes en `.env` (las credenciales nunca se suben a Git ni se escriben en Dockerfiles):
+
+```env
+# MinIO S3 Storage
+MINIO_ROOT_USER=admin_helados
+MINIO_ROOT_PASSWORD=<TU_CONTRASENA_SEGURA>
+MINIO_BUCKET=dvc-storage
+MINIO_ENDPOINT=http://minio:9000
+MINIO_API_PORT=9000
+MINIO_CONSOLE_PORT=9001
+
+# DVC S3 Credentials
+AWS_ACCESS_KEY_ID=admin_helados
+AWS_SECRET_ACCESS_KEY=<TU_CONTRASENA_SEGURA>
+AWS_DEFAULT_REGION=us-east-1
+DVC_S3_ENDPOINT=http://localhost:9000
+
+# Backend FastAPI
+API_HOST=0.0.0.0
+API_PORT=8000
+PROJECT_ROOT=.
+
+# Frontend Streamlit
+STREAMLIT_HOST=0.0.0.0
+STREAMLIT_PORT=8501
+API_URL=http://api:8000
+API_BASE_URL=http://api:8000
+```
+
+### 4. Configuración y Operaciones con DVC y MinIO
+
+```bash
+# 1. Inicializar DVC (si se clona por primera vez)
+dvc init
+
+# 2. Configurar remote S3 apuntando a MinIO
+dvc remote add -d minio s3://dvc-storage
+dvc remote modify minio endpointurl http://localhost:9000
+
+# 3. Comprobar estado del remote
+dvc remote list
+dvc status
+
+# 4. Descargar datasets y modelos desde MinIO
+dvc pull
+
+# 5. Subir datasets y modelos modificados a MinIO
+dvc push
+```
+
+### 5. Despliegue con Docker Compose
+
+El archivo `docker-compose.yml` orquesta cuatro servicios interconectados:
+1. `minio`: Almacenamiento S3 de objetos persistente en `minio_data`.
+2. `minio-init`: Inicialización automática e idempotente del bucket `dvc-storage`.
+3. `api`: Inferencia con FastAPI escuchando en `0.0.0.0:8000`.
+4. `dashboard`: Interfaz gráfica Streamlit escuchando en `0.0.0.0:8501`.
+
+#### Comandos de Docker Compose
+
+```bash
+# Construir las imágenes y levantar todos los microservicios en segundo plano
+docker compose up -d --build
+
+# Verificar el estado y salud de los contenedores
+docker compose ps
+
+# Visualizar logs en tiempo real del backend API
+docker compose logs -f api
+
+# Visualizar logs en tiempo real del frontend Streamlit
+docker compose logs -f dashboard
+
+# Detener los servicios
+docker compose down
+
+# Detener y remover volúmenes si se desea reiniciar datos
+docker compose down -v
+```
+
+### 6. Accesos y URLs de los Servicios
+
+| Servicio | URL Local | Descripción |
+| :--- | :--- | :--- |
+| **Streamlit Dashboard** | [http://localhost:8501](http://localhost:8501) | Dashboard interactivo de diagnóstico predictivo y monitoreo |
+| **FastAPI Root Info** | [http://localhost:8000](http://localhost:8000) | Metadatos del microservicio de inferencia |
+| **FastAPI Health Check** | [http://localhost:8000/health](http://localhost:8000/health) | Estado operativo y modelo activo |
+| **FastAPI Swagger UI** | [http://localhost:8000/docs](http://localhost:8000/docs) | Documentación interactiva OpenAPI / Swagger |
+| **FastAPI Redoc** | [http://localhost:8000/redoc](http://localhost:8000/redoc) | Documentación estructurada Redoc |
+| **MinIO S3 API** | [http://localhost:9000](http://localhost:9000) | Endpoint S3 compatible para DVC y almacenamiento |
+| **MinIO Web Console** | [http://localhost:9001](http://localhost:9001) | Consola gráfica de administración de buckets y objetos |
+
+---
+
 ## Tecnologías Utilizadas
 
-- **Plantilla Base:** [Cookiecutter Data Science](https://drivendata.github.io/cookiecutter-data-science/)
-- **Arquitectura:** Microservicios Modulares desacoplados (MLOps)
-- **Lenguaje:** Python 3.12
-- **Procesamiento de Datos:** Pandas, NumPy
-- **Machine Learning & Pipeline:** Scikit-Learn
-- **Visualización:** Matplotlib, Seaborn
-- **Gestión de Entornos:** Virtualenv, Pip, SetupTools
-- **Control de Versiones:** Git, GitHub
+- **Arquitectura MLOps:** Microservicios desacoplados (Docker, Docker Compose)
+- **Almacenamiento y Versionamiento:** Git, DVC (Data Version Control), MinIO (S3 Compatible)
+- **Backend API REST:** FastAPI, Uvicorn, Pydantic
+- **Frontend Dashboard:** Streamlit, Plotly
+- **Machine Learning & Pipeline:** Scikit-Learn (Random Forest, Logistic Regression), XGBoost, Joblib
+- **Lenguaje y Procesamiento:** Python 3.12, Pandas, NumPy
+- **Pruebas y Calidad:** Pytest, Flake8, TestClient
 
 ---
 

@@ -1,0 +1,5 @@
+outs:
+- md5: aee79c41c7c9c9cc002798717e55c9f4
+  size: 4209
+  hash: md5
+  path: modelo_regresion_logistica.joblib

@@ -9,9 +9,8 @@ env.bak/
 venv.bak/
 
 # ============================================
-# Datos Pesados (Archivos y Datasets)
+# Datos Pesados (Administrados por DVC)
 # ============================================
-data/
 *.csv.gz
 *.parquet
 *.feather
@@ -20,13 +19,21 @@ data/
 # Modelos Serializados y Binarios Pesados
 # ============================================
 models/*.pkl
-models/*.joblib
 models/*.bin
 models/*.onnx
 models/*.pt
 models/*.pth
 models/*.h5
 !models/.gitkeep
+!models/active_model_config.json
+
+# ============================================
+# DVC Metadata (DEBEN ser versionados por Git)
+# ============================================
+!*.dvc
+!.dvc/
+!dvc.yaml
+!dvc.lock
 
 # ============================================
 # Python / Cache / Compilados

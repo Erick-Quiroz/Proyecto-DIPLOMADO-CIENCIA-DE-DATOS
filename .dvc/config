@@ -1,0 +1,5 @@
+[core]
+    remote = minio
+['remote "minio"']
+    url = s3://diplomado
+    endpointurl = http://diplomado-minio-45370e-147-93-118-204.traefik.me
