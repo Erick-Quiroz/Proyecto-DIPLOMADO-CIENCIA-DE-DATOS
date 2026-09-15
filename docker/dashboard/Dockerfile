@@ -5,16 +5,16 @@
 
 FROM python:3.12-slim
 
-# Evitar generación de archivos .pyc y habilitar salida de buffer inmediata
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app
 
 WORKDIR /app
 
-# Instalar dependencias del sistema necesarias
+# Instalar dependencias del sistema (curl para healthcheck, git para DVC)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Instalar dependencias de Python
@@ -22,18 +22,26 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r /app/requirements.txt
 
-# Copiar código del dashboard, datos procesados, modelos y resultados
+# Crear estructura de carpetas
+RUN mkdir -p /app/data/processed /app/data/raw /app/models /app/results
+
+# Copiar configuraciones de DVC
+COPY .dvc/ /app/.dvc/
+COPY .dvcignore /app/.dvcignore
+
+# Copiar código fuente y carpetas de la aplicación
 COPY services/ /app/services/
-COPY data/processed/ /app/data/processed/
+COPY data/ /app/data/
 COPY models/ /app/models/
 COPY results/ /app/results/
 
-# Exponer puerto de Streamlit
+# Copiar y configurar script de arranque
+COPY docker/entrypoint_dashboard.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 8501
 
-# Healthcheck interno del contenedor
-HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
+HEALTHCHECK --interval=10s --timeout=5s --start-period=15s --retries=3 \
     CMD curl -f http://localhost:8501/_stcore/health || exit 1
 
-# Comando de ejecución con Streamlit
-CMD ["streamlit", "run", "services/dashboard/app.py", "--server.address=0.0.0.0", "--server.port=8501", "--server.headless=true", "--browser.gatherUsageStats=false"]
+ENTRYPOINT ["/app/entrypoint.sh"]

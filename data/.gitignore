@@ -1,2 +1,4 @@
-/raw
-/processed
+/raw/*
+!/raw/.gitkeep
+/processed/*
+!/processed/.gitkeep
