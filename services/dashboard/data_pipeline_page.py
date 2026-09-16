@@ -143,17 +143,17 @@ def render_data_pipeline_page(config: DashboardConfig):
                 Flujo Operativo de Datos
             </div>
             <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 0.86rem; font-weight: 600;">
-                <span style="background: #334155; padding: 4px 10px; border-radius: 6px;">1. Cargar CSVs</span>
+                <span style="background: #334155; color: #F8FAFC; padding: 4px 10px; border-radius: 6px;">1. Cargar CSVs</span>
                 <span style="color: #94A3B8;">➔</span>
-                <span style="background: #334155; padding: 4px 10px; border-radius: 6px;">2. Validar Esquemas</span>
+                <span style="background: #334155; color: #F8FAFC; padding: 4px 10px; border-radius: 6px;">2. Validar Esquemas</span>
                 <span style="color: #94A3B8;">➔</span>
-                <span style="background: #2563EB; color: white; padding: 4px 10px; border-radius: 6px;">3. Limpieza & Split</span>
+                <span style="background: #334155; color: #F8FAFC; padding: 4px 10px; border-radius: 6px;">3. Limpieza & Split</span>
                 <span style="color: #94A3B8;">➔</span>
-                <span style="background: #334155; padding: 4px 10px; border-radius: 6px;">4. EDA</span>
+                <span style="background: #334155; color: #F8FAFC; padding: 4px 10px; border-radius: 6px;">4. EDA</span>
                 <span style="color: #94A3B8;">➔</span>
-                <span style="background: #334155; padding: 4px 10px; border-radius: 6px;">5. Modelado (RF/LR/XGB)</span>
+                <span style="background: #334155; color: #F8FAFC; padding: 4px 10px; border-radius: 6px;">5. Modelado (RF/LR/XGB)</span>
                 <span style="color: #94A3B8;">➔</span>
-                <span style="background: #10B981; color: white; padding: 4px 10px; border-radius: 6px;">6. Métricas & Resultados</span>
+                <span style="background: #334155; color: #F8FAFC; padding: 4px 10px; border-radius: 6px;">6. Métricas & Resultados</span>
             </div>
         </div>
         """,
