@@ -16,6 +16,7 @@ class DashboardConfig:
             os.getenv("PROJECT_ROOT", Path(__file__).resolve().parents[2])
         )
     )
+    raw_data_dir: Path = field(default=None)
     processed_data_dir: Path = field(default=None)
     models_dir: Path = field(default=None)
     results_dir: Path = field(default=None)
@@ -83,6 +84,8 @@ class DashboardConfig:
     )
 
     def __post_init__(self):
+        if self.raw_data_dir is None:
+            self.raw_data_dir = self.base_dir / "data" / "raw"
         if self.processed_data_dir is None:
             self.processed_data_dir = self.base_dir / "data" / "processed"
         if self.models_dir is None:
@@ -97,6 +100,7 @@ class DashboardConfig:
             self.predictions_dir = self.results_dir / "predictions"
 
         # Garantizar directorios
+        self.raw_data_dir.mkdir(parents=True, exist_ok=True)
         self.models_dir.mkdir(parents=True, exist_ok=True)
         self.modeling_results_dir.mkdir(parents=True, exist_ok=True)
         self.evaluation_results_dir.mkdir(parents=True, exist_ok=True)

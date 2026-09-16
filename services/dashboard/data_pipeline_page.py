@@ -166,7 +166,8 @@ def render_data_pipeline_page(config: DashboardConfig):
         unsafe_allow_html=True,
     )
 
-    validator = DataValidator(config.raw_data_dir)
+    raw_data_dir = getattr(config, "raw_data_dir", None) or (config.base_dir / "data" / "raw")
+    validator = DataValidator(raw_data_dir)
 
     # 2. Sección de carga de cada CSV
     st.subheader("1. Carga Independiente de Datasets Crudos")
@@ -175,7 +176,7 @@ def render_data_pipeline_page(config: DashboardConfig):
     for schema_key in RAW_DATASETS_SCHEMAS.keys():
         render_dataset_upload_card(
             schema_key=schema_key,
-            raw_data_dir=config.raw_data_dir,
+            raw_data_dir=raw_data_dir,
             validator=validator,
         )
 
