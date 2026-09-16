@@ -29,6 +29,7 @@ from services.dashboard.components import (
 )
 from services.dashboard.prediction import render_prediction_page
 from services.dashboard.model_lab import render_model_lab_page
+from services.dashboard.data_pipeline_page import render_data_pipeline_page
 
 
 def main():
@@ -78,6 +79,7 @@ def main():
 
         nav_items = [
             ("🏠 Panel General", "panel"),
+            ("📥 Carga y Pipeline", "pipeline"),
             ("🔮 Diagnóstico y Predicción", "prediccion"),
             ("📊 Análisis de Modelos", "analisis"),
             ("📋 Historial Operativo", "historial"),
@@ -149,15 +151,28 @@ def main():
         st.markdown(f"<div class='sub-header'>{config.app_subtitle} — {config.app_description}</div>", unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
 
-        total_equipos = df_full["Identificador_Equipo"].nunique() if not df_full.empty else 14
+        total_equipos = df_full["Identificador_Equipo"].nunique() if not df_full.empty else (
+            df_preds_final["Identificador_Equipo"].nunique() if not df_preds_final.empty else 0
+        )
 
         if not df_preds_final.empty:
-            prob_col = "Probabilidad_Falla_7_Dias_Pct"
-            criticos = int((df_preds_final[prob_col] >= 60).sum())
-            observacion = int(((df_preds_final[prob_col] >= 30) & (df_preds_final[prob_col] < 60)).sum())
-            operativos = int((df_preds_final[prob_col] < 30).sum())
+            prob_col = (
+                "Probabilidad_Falla_7_Dias_Pct"
+                if "Probabilidad_Falla_7_Dias_Pct" in df_preds_final.columns
+                else "Prob_Falla_Random Forest (%)"
+            )
+            # Agrupar por equipo tomando su última observación evaluada
+            df_latest_by_eq = (
+                df_preds_final.sort_values(by="Fecha_Observacion")
+                .groupby("Identificador_Equipo")
+                .last()
+                .reset_index()
+            )
+            criticos = int((df_latest_by_eq[prob_col] >= 60).sum())
+            observacion = int(((df_latest_by_eq[prob_col] >= 30) & (df_latest_by_eq[prob_col] < 60)).sum())
+            operativos = int((df_latest_by_eq[prob_col] < 30).sum())
         else:
-            operativos, observacion, criticos = 12, 1, 1
+            operativos, observacion, criticos = 0, 0, 0
 
         render_kpi_cards(
             total_equipos=total_equipos,
@@ -343,6 +358,12 @@ def main():
     # ----------------------------------------------------
     elif menu_option == "🧠 Laboratorio de Modelos":
         render_model_lab_page(config=config)
+
+    # ----------------------------------------------------
+    # SECCIÓN 6: CARGA DE DATOS Y PIPELINE
+    # ----------------------------------------------------
+    elif menu_option == "📥 Carga y Pipeline":
+        render_data_pipeline_page(config=config)
 
 
 if __name__ == "__main__":
