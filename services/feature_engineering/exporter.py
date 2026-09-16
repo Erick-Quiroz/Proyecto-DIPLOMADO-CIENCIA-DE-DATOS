@@ -88,18 +88,34 @@ class DataExporter:
             },
         ]
         df_split_summary = pd.DataFrame(split_summary)
+        
+        # Guardar en tablas_preparacion y reports/tables/preparacion
+        reports_tables_dir = self.config.base_dir / "reports" / "tables" / "preparacion"
+        reports_tables_dir.mkdir(parents=True, exist_ok=True)
+        
         df_split_summary.to_csv(
             self.config.tables_dir / "resumen_particion_temporal.csv",
+            index=False,
+            encoding="utf-8-sig",
+        )
+        df_split_summary.to_csv(
+            reports_tables_dir / "resumen_particion_temporal.csv",
             index=False,
             encoding="utf-8-sig",
         )
 
         # Resumen general de preparación
         total_valid = len(df_train) + len(df_valid) + len(df_test)
+        total_f0 = int((df_train[self.config.target_column] == 0).sum() + (df_valid[self.config.target_column] == 0).sum() + (df_test[self.config.target_column] == 0).sum())
+        total_f1 = int((df_train[self.config.target_column] == 1).sum() + (df_valid[self.config.target_column] == 1).sum() + (df_test[self.config.target_column] == 1).sum())
+        pct_f0 = round(total_f0 / total_valid * 100, 2)
+        pct_f1 = round(total_f1 / total_valid * 100, 2)
+
         summary_general = [
             {"Metrica": "Filas iniciales", "Valor": stats_cleaning.get("filas_iniciales", 17719)},
             {"Metrica": "Filas sin horizonte eliminadas", "Valor": stats_cleaning.get("filas_sin_horizonte_eliminadas", 203)},
-            {"Metrica": "Filas finales preparadas", "Valor": total_valid},
+            {"Metrica": "Filas finales preparadas y particionadas", "Valor": total_valid},
+            {"Metrica": "Filas en ventanas de purga (7D)", "Valor": 406},
             {"Metrica": "Número de variables iniciales", "Valor": 19},
             {"Metrica": "Número de variables predictoras finales", "Valor": len(feature_columns)},
             {"Metrica": "Variables predictoras utilizadas", "Valor": ", ".join(feature_columns)},
@@ -109,7 +125,7 @@ class DataExporter:
             {"Metrica": "Codificación categórica", "Valor": "Criticidad (Ordinal 0-2), Tipo_Equipo/Proceso/Línea (One-Hot)"},
             {"Metrica": "Escalamiento", "Valor": "Preservado en unidades originales; preparado para pipeline de modelos lineales"},
             {"Metrica": "Variables nuevas creadas", "Valor": "Medias 7D, Std 7D, Deltas 1D, Carga_Electromecanica, Ratio_Presion_Caudal"},
-            {"Metrica": "Distribución final target (0 / 1)", "Valor": f"0: 15,570 (88.89%) | 1: 1,946 (11.11%)"},
+            {"Metrica": "Distribución final target (0 / 1)", "Valor": f"0: {total_f0:,d} ({pct_f0:.2f}%) | 1: {total_f1:,d} ({pct_f1:.2f}%)"},
             {"Metrica": "Registros en Train", "Valor": len(df_train)},
             {"Metrica": "Registros en Validación", "Valor": len(df_valid)},
             {"Metrica": "Registros en Test", "Valor": len(df_test)},
@@ -117,6 +133,11 @@ class DataExporter:
         df_summary_general = pd.DataFrame(summary_general)
         df_summary_general.to_csv(
             self.config.tables_dir / "resumen_final_preparacion.csv",
+            index=False,
+            encoding="utf-8-sig",
+        )
+        df_summary_general.to_csv(
+            reports_tables_dir / "resumen_final_preparacion.csv",
             index=False,
             encoding="utf-8-sig",
         )
@@ -129,6 +150,8 @@ class DataExporter:
     ):
         # Configurar estilo visual limpio
         plt.style.use("seaborn-v0_8-whitegrid" if "seaborn-v0_8-whitegrid" in plt.style.available else "default")
+        reports_fig_dir = self.config.base_dir / "reports" / "figures" / "preparacion"
+        reports_fig_dir.mkdir(parents=True, exist_ok=True)
 
         # 1. Gráfico de distribución de target por partición
         fig, ax = plt.subplots(figsize=(8, 5))
@@ -154,12 +177,13 @@ class DataExporter:
             alpha=0.85,
         )
         ax.set_title("Distribución de Clase Objetivo (0: Sin Falla vs 1: Falla) por Partición", fontsize=12, fontweight="bold")
-        ax.set_xlabel("Partición Temporal", fontsize=11)
+        ax.set_xlabel("Partición Temporal (Con Purga 7D)", fontsize=11)
         ax.set_ylabel("Porcentaje (%)", fontsize=11)
         ax.legend(["0 = Sin Falla (7D)", "1 = Falla en 7D"], frameon=True)
         plt.xticks(rotation=0)
         plt.tight_layout()
         fig.savefig(self.config.figures_dir / "distribucion_target_temporal.png", dpi=200)
+        fig.savefig(reports_fig_dir / "distribucion_target_temporal.png", dpi=200)
         plt.close(fig)
 
         # 2. Gráfico cronológico de cobertura temporal
@@ -183,8 +207,9 @@ class DataExporter:
                 fontsize=9,
             )
 
-        ax.set_title("Esquema de Partición Temporal Cronológica (Sin Fuga de Información)", fontsize=12, fontweight="bold")
+        ax.set_title("Esquema de Partición Temporal Cronológica con Purga de 7 Días (Cero Leakage)", fontsize=12, fontweight="bold")
         ax.set_xlabel("Línea Temporal de Observación", fontsize=11)
         plt.tight_layout()
         fig.savefig(self.config.figures_dir / "particion_cronologica.png", dpi=200)
+        fig.savefig(reports_fig_dir / "particion_cronologica.png", dpi=200)
         plt.close(fig)

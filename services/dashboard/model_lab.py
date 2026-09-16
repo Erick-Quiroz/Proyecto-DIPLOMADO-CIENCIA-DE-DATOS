@@ -126,7 +126,7 @@ def render_model_lab_page(config: DashboardConfig):
     # 3. Botón de Entrenamiento
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("ENTRENAR MODELO CON ESTOS HIPERPARÁMETROS", type="primary", use_container_width=True):
-        with st.spinner("Entrenando modelo exclusivamente sobre X_train (12,412 registros)..."):
+        with st.spinner(f"Entrenando modelo exclusivamente sobre X_train ({len(X_train):,d} registros)..."):
             start_time = time.time()
 
             if model_choice == "Regresión Logística":

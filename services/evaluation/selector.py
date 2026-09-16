@@ -58,12 +58,13 @@ class ModelSelector:
         selected_auc = best_row["ROC-AUC_Pct"]
         selected_fn = best_row["Falsos_Negativos (FN)"]
         selected_tp = best_row["Verdaderos_Positivos (TP)"]
+        total_fallas = int(selected_tp + selected_fn)
 
         # Justificación basada en el contexto de negocio
         justification = (
-            f"El modelo '{selected_name}' fue seleccionado como el modelo definitivo debido a su sobresaliente "
-            f"capacidad de detección y cobertura de fallas en el conjunto de prueba independiente (Recall del {selected_recall}%), "
-            f"logrando anticipar {selected_tp} de 310 eventos de falla reales con apenas {selected_fn} falso negativo. "
+            f"El modelo '{selected_name}' fue seleccionado como el modelo óptimo debido a su sobresaliente "
+            f"capacidad de detección y cobertura de fallas (Recall del {selected_recall}%), "
+            f"logrando anticipar {selected_tp} de {total_fallas} eventos de falla reales con apenas {selected_fn} falso(s) negativo(s). "
             f"En el contexto industrial de la planta de helados, un falso negativo representa una parada no programada de "
             f"alto costo operativo y riesgo de merma en frío, por lo que maximizar la sensibilidad de detección mientras se "
             f"mantiene un F1-Score robusto del {selected_f1}% y un ROC-AUC del {selected_auc}% lo posiciona como la solución más segura y confiable."

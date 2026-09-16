@@ -91,37 +91,52 @@ class EvaluationPipeline:
         return loaded_models
 
     def run(self) -> Dict[str, Any]:
-        """Ejecuta la evaluación completa, comparación y persistencia de artefactos."""
+        """Ejecuta la evaluación completa, comparación en Validación, selección y evaluación en Prueba."""
         X_train, X_valid, X_test, y_train, y_valid, y_test, df_test_meta = self.load_data()
         loaded_models = self.load_models()
 
-        # 1. Evaluación sobre conjunto de prueba X_test
+        # 1. Comparación y selección metodológica sobre conjunto de Validación (X_valid)
+        validation_results = {}
+        for key, model_data in loaded_models.items():
+            metrics_val = self.evaluator.evaluate_model_on_split(
+                model_data["estimator"], X_valid, y_valid
+            )
+            validation_results[key] = {
+                "display_name": model_data["display_name"],
+                "family": model_data["family"],
+                "estimator": model_data["estimator"],
+                "metrics": metrics_val,
+            }
+
+        validation_comparison_df = self.selector.build_comparison_table(validation_results)
+        selected_model_info, justification = self.selector.select_best_model(validation_comparison_df)
+
+        # 2. Evaluación sobre conjunto de prueba final independiente (X_test)
         evaluation_results = {}
         for key, model_data in loaded_models.items():
-            metrics = self.evaluator.evaluate_model_on_split(
+            metrics_test = self.evaluator.evaluate_model_on_split(
                 model_data["estimator"], X_test, y_test
             )
             evaluation_results[key] = {
                 "display_name": model_data["display_name"],
                 "family": model_data["family"],
                 "estimator": model_data["estimator"],
-                "metrics": metrics,
+                "metrics": metrics_test,
             }
 
-        # 2. Diagnóstico de estabilidad y detección de overfitting (Train vs Valid vs Test)
+        # 3. Diagnóstico de estabilidad y detección de overfitting (Train vs Valid vs Test)
         stability_rows = self.evaluator.generate_stability_analysis(
             loaded_models, X_train, y_train, X_valid, y_valid, X_test, y_test
         )
 
-        # 3. Gráficos de matrices de confusión y curvas ROC
+        # 4. Gráficos de matrices de confusión y curvas ROC sobre Test
         cm_plots = self.evaluator.plot_confusion_matrices(evaluation_results)
         roc_plot = self.evaluator.plot_comparative_roc_curves(y_test, evaluation_results)
 
-        # 4. Tabla comparativa y selección del modelo ganador
+        # 5. Tabla comparativa final sobre Test
         comparison_df = self.selector.build_comparison_table(evaluation_results)
-        selected_model_info, justification = self.selector.select_best_model(comparison_df)
 
-        # 5. Exportación de tablas y predicciones
+        # 6. Exportación de tablas y predicciones
         table_paths = self.exporter.save_comparison_and_metrics_tables(
             comparison_df, stability_rows
         )
@@ -134,6 +149,8 @@ class EvaluationPipeline:
         )
 
         return {
+            "validation_results": validation_results,
+            "validation_comparison_df": validation_comparison_df,
             "evaluation_results": evaluation_results,
             "comparison_df": comparison_df,
             "selected_model_info": selected_model_info,
@@ -145,8 +162,12 @@ class EvaluationPipeline:
             "final_preds_path": final_preds_path,
             "all_preds_path": all_preds_path,
             "shapes": {
+                "n_train": len(X_train),
+                "n_valid": len(X_valid),
                 "n_test": len(X_test),
                 "n_features": X_test.shape[1],
+                "n_fallas_train": int(y_train.sum()),
+                "n_fallas_valid": int(y_valid.sum()),
                 "n_fallas_test": int(y_test.sum()),
                 "target_name": "Falla_En_Los_Siguientes_Siete_Dias",
             },

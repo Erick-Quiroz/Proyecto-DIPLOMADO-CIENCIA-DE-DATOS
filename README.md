@@ -59,11 +59,21 @@ python scripts/setup_environment.py --mode unified
 [Codificación Categórica] ──────────► One-Hot y Ordinal ajustados estrictamente en TRAIN
                   │
                   ▼
-[División Cronológica]
-   ├── Entrenamiento (Train) : 12,412 registros (70.86%) | 1,323 fallas (10.66%) [2025-01-01 a 2026-03-04]
-   ├── Validación (Valid)    :  2,668 registros (15.23%) |   313 fallas (11.73%) [2026-03-05 a 2026-06-04]
+[Partición Cronológica con Purga 7D]
+   ├── Entrenamiento (Train) : 12,209 registros (69.70%) | 1,301 fallas (10.66%) [2025-01-01 a 2026-02-25]
+   ├── Purga Train → Valid   :    203 registros ( 1.16%) [2026-02-26 a 2026-03-04] (Ventana 7D excluida de Train/Valid)
+   ├── Validación (Valid)    :  2,465 registros (14.07%) |   289 fallas (11.72%) [2026-03-05 a 2026-05-28]
+   ├── Purga Valid → Test    :    203 registros ( 1.16%) [2026-05-29 a 2026-06-04] (Ventana 7D excluida de Valid/Test)
    └── Prueba (Test)         :  2,436 registros (13.91%) |   310 fallas (12.73%) [2026-06-05 a 2026-08-27]
 ```
+
+### 7.3.6 Partición temporal de los datos
+- **Detección de Temporal Leakage:** Inicialmente se identificó un problema de fuga de información temporal (*temporal leakage*) derivado de la propia definición de la variable objetivo (`Falla_En_Los_Siguientes_Siete_Dias`), la cual evalúa un horizonte futuro de siete días $[T+1, T+7]$ a partir de cada fecha de observación $T$.
+- **Insuficiencia de la división simple por fecha:** Una partición temporal simple basada únicamente en la fecha de observación no resultaba metodológicamente suficiente, dado que las etiquetas de las observaciones finales de cada conjunto (por ejemplo, del 2026-03-04 en Train) dependían directamente de fallas y eventos ocurridos entre el 2026-03-05 y el 2026-03-11, pertenecientes temporalmente al período de Validación. De forma análoga, las observaciones finales de Validación dependían de eventos en el período de Prueba.
+- **Implementación de Ventana de Purga (7 Días):** Para garantizar que el horizonte máximo del target de cada partición sea estrictamente anterior al inicio del siguiente conjunto ($\max(\text{Target}_k) < \min(\text{Observación}_{k+1})$), se aplicaron dos ventanas de purga de siete días:
+  1. *Purga Train $\to$ Validation (2026-02-26 a 2026-03-04, 203 filas):* Asegura que el target máximo de Train (2026-03-04) no invada el inicio de Validación (2026-03-05). Condición: **PASS**.
+  2. *Purga Validation $\to$ Test (2026-05-29 a 2026-06-04, 203 filas):* Asegura que el target máximo de Validación (2026-06-04) no invada el inicio de Prueba (2026-06-05). Condición: **PASS**.
+- **Preservación en Dataset Consolidado:** Las 406 observaciones purgadas se excluyen de las matrices de entrenamiento y validación ($X/y$), pero se preservan intactas en `dataset_modelado.csv` con la etiqueta metodológica `Conjunto_Temporal = "Purga"`.
 
 ### Prevención de Data Leakage
 - **Variables descartadas como predictores:** `Identificador_Equipo`, `Codigo_Equipo_Origen`, `Nombre_Equipo` (evitan memorización y sobreajuste).

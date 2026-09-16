@@ -63,10 +63,12 @@ def run_preparation():
     for val in [0, 1]:
         print(f"   Clase {val} ({'Sin Falla en 7D' if val == 0 else 'Falla en 7D'}): {target_counts[val]:,d} registros ({target_pcts[val]:.2f}%)")
 
-    print(f"\n5. PARTICIÓN CRONOLÓGICA (TRAIN / VALIDACIÓN / TEST):")
-    print(f"   - Entrenamiento (Train) : {len(X_train):,d} registros ({len(X_train)/len(df_full)*100:.2f}%) | Fallas: {y_train.sum():,d} ({y_train.mean()*100:.2f}%)")
-    print(f"   - Validación (Valid)    : {len(X_valid):,d} registros ({len(X_valid)/len(df_full)*100:.2f}%) | Fallas: {y_valid.sum():,d} ({y_valid.mean()*100:.2f}%)")
-    print(f"   - Prueba (Test)         : {len(X_test):,d} registros ({len(X_test)/len(df_full)*100:.2f}%) | Fallas: {y_test.sum():,d} ({y_test.mean()*100:.2f}%)")
+    print(f"\n5. PARTICIÓN CRONOLÓGICA CON PURGA DE 7 DÍAS (TRAIN / PURGA / VALIDACIÓN / PURGA / TEST):")
+    print(f"   - Entrenamiento (Train) : {len(X_train):,d} registros ({len(X_train)/len(df_full)*100:.2f}%) | Fallas: {y_train.sum():,d} ({y_train.mean()*100:.2f}%) [2025-01-01 a 2026-02-25]")
+    print(f"   - Purga Train → Valid   : 203 registros (7 días excluidos) [2026-02-26 a 2026-03-04]")
+    print(f"   - Validación (Valid)    : {len(X_valid):,d} registros ({len(X_valid)/len(df_full)*100:.2f}%) | Fallas: {y_valid.sum():,d} ({y_valid.mean()*100:.2f}%) [2026-03-05 a 2026-05-28]")
+    print(f"   - Purga Valid → Test    : 203 registros (7 días excluidos) [2026-05-29 a 2026-06-04]")
+    print(f"   - Prueba (Test)         : {len(X_test):,d} registros ({len(X_test)/len(df_full)*100:.2f}%) | Fallas: {y_test.sum():,d} ({y_test.mean()*100:.2f}%) [2026-06-05 a 2026-08-27]")
 
     print(f"\n6. UBICACIÓN DE LOS ARCHIVOS GENERADOS:")
     print(f"   - Dataset consolidado: {feature_config.processed_data_dir / 'dataset_modelado.csv'}")

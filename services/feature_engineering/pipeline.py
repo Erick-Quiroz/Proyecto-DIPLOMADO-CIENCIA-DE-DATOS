@@ -38,7 +38,10 @@ class FeaturePipeline:
         df_train = self.encoder.transform(df_train_raw)
         df_valid = self.encoder.transform(df_valid_raw)
         df_test = self.encoder.transform(df_test_raw)
+        
+        # Asignar etiquetas actualizadas de partición y purga al dataset consolidado
         df_full = self.encoder.transform(df_featured)
+        df_full = self.splitter.assign_split_labels(df_full)
 
         # Determinar columnas predictoras finales
         feature_columns = self.splitter.get_feature_columns(df_train)

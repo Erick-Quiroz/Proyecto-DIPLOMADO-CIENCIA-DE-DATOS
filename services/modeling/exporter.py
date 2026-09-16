@@ -17,9 +17,16 @@ class ModelingExporter:
         self.config = config
 
     def save_model(self, estimator: Any, filename: str) -> Path:
-        """Serializa y guarda el estimador o pipeline entrenado en models/."""
+        """Serializa y guarda el estimador o pipeline entrenado en models/ tanto en .joblib como en .pkl."""
         output_path = self.config.models_dir / filename
         joblib.dump(estimator, output_path)
+        
+        # Guardar copia con extensión .pkl y nombre estándar
+        base_stem = Path(filename).stem
+        short_stem = base_stem.replace("modelo_", "") if base_stem.startswith("modelo_") else base_stem
+        pkl_path = self.config.models_dir / f"{short_stem}.pkl"
+        joblib.dump(estimator, pkl_path)
+        
         return output_path
 
     def save_validation_predictions(

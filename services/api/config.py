@@ -32,7 +32,7 @@ class APIConfig:
         "industriales del área de helados en una ventana de 7 días (CRISP-DM Fase 7.6)."
     )
 
-    # Modelo activo por defecto (Seleccionado en Fase 7.5 por Recall = 99.68%)
+    # Modelo activo por defecto (Seleccionado en Fase 7.5 por Recall = 97.58% en Validación / 99.35% en Test)
     default_active_model: str = "modelo_random_forest.joblib"
 
     # Umbrales centralizados de nivel de riesgo operativo

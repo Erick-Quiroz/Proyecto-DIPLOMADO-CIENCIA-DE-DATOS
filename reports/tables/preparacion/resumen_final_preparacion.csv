@@ -1,7 +1,8 @@
 ﻿Metrica,Valor
 Filas iniciales,17719
 Filas sin horizonte eliminadas,203
-Filas finales preparadas,17516
+Filas finales preparadas y particionadas,17110
+Filas en ventanas de purga (7D),406
 Número de variables iniciales,19
 Número de variables predictoras finales,44
 Variables predictoras utilizadas,"Temperatura_Proceso, Vibracion_Equipo, Presion_Sistema, Corriente_Motor, Caudal_Proceso, Nivel_Sistema, Velocidad_Accionamiento, Horas_Operacion, Temperatura_Proceso_Media_7D, Temperatura_Proceso_Std_7D, Temperatura_Proceso_Delta_1D, Vibracion_Equipo_Media_7D, Vibracion_Equipo_Std_7D, Vibracion_Equipo_Delta_1D, Presion_Sistema_Media_7D, Presion_Sistema_Std_7D, Presion_Sistema_Delta_1D, Corriente_Motor_Media_7D, Corriente_Motor_Std_7D, Corriente_Motor_Delta_1D, Carga_Electromecanica, Ratio_Presion_Caudal, Criticidad_Ordinal, Tipo_Equipo_Bomba de circulación, Tipo_Equipo_Compresor de refrigeración, Tipo_Equipo_Congelador industrial, Tipo_Equipo_Cámara frigorífica, Tipo_Equipo_Dosificadora de helado, Tipo_Equipo_Envasadora automática, Tipo_Equipo_Homogeneizador, Tipo_Equipo_Mezclador industrial, Tipo_Equipo_Pasteurizador, Tipo_Equipo_Selladora de envases, Tipo_Equipo_Transportador de producto, Tipo_Equipo_Túnel de congelación, Proceso_Almacenamiento, Proceso_Congelación, Proceso_Envasado, Proceso_Preparación, Proceso_Refrigeración, Línea_Línea de Helados 01, Línea_Línea de Helados 02, Línea_Línea de Helados 03, Línea_Línea de Helados 04"
@@ -11,7 +12,7 @@ Duplicados encontrados,0 duplicados en unidad Equipo-Día
 Codificación categórica,"Criticidad (Ordinal 0-2), Tipo_Equipo/Proceso/Línea (One-Hot)"
 Escalamiento,Preservado en unidades originales; preparado para pipeline de modelos lineales
 Variables nuevas creadas,"Medias 7D, Std 7D, Deltas 1D, Carga_Electromecanica, Ratio_Presion_Caudal"
-Distribución final target (0 / 1),"0: 15,570 (88.89%) | 1: 1,946 (11.11%)"
-Registros en Train,12412
-Registros en Validación,2668
+Distribución final target (0 / 1),"0: 15,210 (88.90%) | 1: 1,900 (11.10%)"
+Registros en Train,12209
+Registros en Validación,2465
 Registros en Test,2436

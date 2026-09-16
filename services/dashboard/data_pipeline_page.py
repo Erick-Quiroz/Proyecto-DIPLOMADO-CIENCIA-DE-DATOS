@@ -43,21 +43,19 @@ def render_dataset_upload_card(
 
     # Tarjeta de dataset
     st.markdown(
-        f"""
-        <div style="border: 1px solid #E2E8F0; border-radius: 10px; padding: 18px; margin-bottom: 16px; background-color: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <div style="font-weight: 700; font-size: 1.05rem; color: #1E293B;">
-                    {schema.label} <code style="font-size: 0.82rem; background: #F1F5F9; color: #475569; padding: 2px 6px; border-radius: 4px;">{schema.filename}</code>
-                </div>
-                <div style="background: {badge_bg}; border: 1px solid {badge_border}; color: {badge_color}; padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700;">
-                    {status_text}
-                </div>
-            </div>
-            <div style="font-size: 0.85rem; color: #64748B; margin-bottom: 12px;">
-                {schema.description}
-            </div>
-        </div>
-        """,
+        f'<div style="border: 1px solid #E2E8F0; border-radius: 10px; padding: 18px; margin-bottom: 16px; background-color: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">'
+        f'<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">'
+        f'<div style="font-weight: 700; font-size: 1.05rem; color: #1E293B;">'
+        f'{schema.label} <code style="font-size: 0.82rem; background: #F1F5F9; color: #475569; padding: 2px 6px; border-radius: 4px;">{schema.filename}</code>'
+        f'</div>'
+        f'<div style="background: {badge_bg}; border: 1px solid {badge_border}; color: {badge_color}; padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700;">'
+        f'{status_text}'
+        f'</div>'
+        f'</div>'
+        f'<div style="font-size: 0.85rem; color: #64748B; margin-bottom: 12px;">'
+        f'{schema.description}'
+        f'</div>'
+        f'</div>',
         unsafe_allow_html=True,
     )
 
@@ -98,35 +96,31 @@ def render_dataset_upload_card(
     with col2:
         # Mostrar resumen de estado actual
         if status == "valid":
+            equipos_html = f"<div><strong>Equipos detectados:</strong> {val_res['unique_equipos']}</div>" if val_res.get('unique_equipos', 0) > 0 else ""
             st.markdown(
-                f"""
-                <div style="font-size: 0.82rem; color: #334155; line-height: 1.6; background: #F8FAFC; padding: 10px 14px; border-radius: 8px; border: 1px solid #E2E8F0;">
-                    <div><strong>Registros:</strong> {val_res['row_count']:,d} filas</div>
-                    <div><strong>Columnas:</strong> {val_res['col_count']} variables</div>
-                    {f"<div><strong>Equipos detectados:</strong> {val_res['unique_equipos']}</div>" if val_res['unique_equipos'] > 0 else ""}
-                    <div style="color: #059669; font-weight: 600; margin-top: 4px;">Todas las columnas requeridas presentes</div>
-                </div>
-                """,
+                f'<div style="font-size: 0.82rem; color: #334155; line-height: 1.6; background: #F8FAFC; padding: 10px 14px; border-radius: 8px; border: 1px solid #E2E8F0;">'
+                f'<div><strong>Registros:</strong> {val_res["row_count"]:,d} filas</div>'
+                f'<div><strong>Columnas:</strong> {val_res["col_count"]} variables</div>'
+                f'{equipos_html}'
+                f'<div style="color: #059669; font-weight: 600; margin-top: 4px;">Todas las columnas requeridas presentes</div>'
+                f'</div>',
                 unsafe_allow_html=True,
             )
         elif status == "warning":
+            err_items = "".join([f"<div>• {e['description']}</div>" for e in val_res.get('errors', [])[:3]])
             st.markdown(
-                f"""
-                <div style="font-size: 0.82rem; color: #991B1B; line-height: 1.5; background: #FEF2F2; padding: 10px 14px; border-radius: 8px; border: 1px solid #FCA5A5;">
-                    <div style="font-weight: 700;">Problemas detectados:</div>
-                    {"".join([f"<div>• {e['description']}</div>" for e in val_res['errors'][:3]])}
-                </div>
-                """,
+                f'<div style="font-size: 0.82rem; color: #991B1B; line-height: 1.5; background: #FEF2F2; padding: 10px 14px; border-radius: 8px; border: 1px solid #FCA5A5;">'
+                f'<div style="font-weight: 700;">Problemas detectados:</div>'
+                f'{err_items}'
+                f'</div>',
                 unsafe_allow_html=True,
             )
         else:
             st.markdown(
-                f"""
-                <div style="font-size: 0.82rem; color: #64748B; line-height: 1.5; background: #F8FAFC; padding: 10px 14px; border-radius: 8px; border: 1px dashed #CBD5E1;">
-                    <div><strong>Archivo no detectado.</strong></div>
-                    <div style="margin-top: 4px;">Suba el archivo correspondiente o asegúrese de que exista en <code>data/raw/{schema.filename}</code>.</div>
-                </div>
-                """,
+                f'<div style="font-size: 0.82rem; color: #64748B; line-height: 1.5; background: #F8FAFC; padding: 10px 14px; border-radius: 8px; border: 1px dashed #CBD5E1;">'
+                f'<div><strong>Archivo no detectado.</strong></div>'
+                f'<div style="margin-top: 4px;">Suba el archivo correspondiente o asegúrese de que exista en <code>data/raw/{schema.filename}</code>.</div>'
+                f'</div>',
                 unsafe_allow_html=True,
             )
 
@@ -173,12 +167,27 @@ def render_data_pipeline_page(config: DashboardConfig):
     st.subheader("1. Carga Independiente de Datasets Crudos")
     st.caption("Cada dataset cuenta con su propio campo de carga dedicado. No se mezclarán ni asumirán nombres genéricos.")
 
-    for schema_key in RAW_DATASETS_SCHEMAS.keys():
+    # Cargar primero los datasets operativos obligatorios
+    mandatory_schemas = [k for k, s in RAW_DATASETS_SCHEMAS.items() if s.is_mandatory]
+    optional_schemas = [k for k, s in RAW_DATASETS_SCHEMAS.items() if not s.is_mandatory]
+
+    for schema_key in mandatory_schemas:
         render_dataset_upload_card(
             schema_key=schema_key,
             raw_data_dir=raw_data_dir,
             validator=validator,
         )
+
+    # Cargar al final el diccionario de metadatos descriptivos (opcional)
+    if optional_schemas:
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("**Diccionario de Datos y Metadatos (Opcional):**")
+        for schema_key in optional_schemas:
+            render_dataset_upload_card(
+                schema_key=schema_key,
+                raw_data_dir=raw_data_dir,
+                validator=validator,
+            )
 
     # 3. Resumen y Validación Obligatoria Previa
     st.subheader("2. Validación de Estado de Datasets")
@@ -200,27 +209,23 @@ def render_data_pipeline_page(config: DashboardConfig):
     with col_st2:
         if can_execute:
             st.markdown(
-                """
-                <div style="background-color: #ECFDF5; border-left: 5px solid #10B981; padding: 14px 18px; border-radius: 8px; color: #065F46;">
-                    <div style="font-weight: 700; font-size: 0.95rem;">Todos los datasets obligatorios están listos</div>
-                    <div style="font-size: 0.82rem; margin-top: 4px;">Esquemas y columnas validados. Puede iniciar la ejecución completa del pipeline.</div>
-                </div>
-                """,
+                '<div style="background-color: #ECFDF5; border-left: 5px solid #10B981; padding: 14px 18px; border-radius: 8px; color: #065F46;">'
+                '<div style="font-weight: 700; font-size: 0.95rem;">Todos los datasets obligatorios están listos</div>'
+                '<div style="font-size: 0.82rem; margin-top: 4px;">Esquemas y columnas validados. Puede iniciar la ejecución completa del pipeline.</div>'
+                '</div>',
                 unsafe_allow_html=True,
             )
         else:
             faltantes_str = ", ".join(val_summary["missing_datasets"]) if val_summary["missing_datasets"] else "Ninguno"
             con_error_str = ", ".join(val_summary["datasets_with_errors"]) if val_summary["datasets_with_errors"] else "Ninguno"
             st.markdown(
-                f"""
-                <div style="background-color: #FEF2F2; border-left: 5px solid #EF4444; padding: 14px 18px; border-radius: 8px; color: #991B1B;">
-                    <div style="font-weight: 700; font-size: 0.95rem;">No se puede ejecutar el pipeline</div>
-                    <div style="font-size: 0.82rem; margin-top: 4px;">
-                        <strong>Faltantes:</strong> {faltantes_str}<br>
-                        <strong>Con errores:</strong> {con_error_str}
-                    </div>
-                </div>
-                """,
+                f'<div style="background-color: #FEF2F2; border-left: 5px solid #EF4444; padding: 14px 18px; border-radius: 8px; color: #991B1B;">'
+                f'<div style="font-weight: 700; font-size: 0.95rem;">No se puede ejecutar el pipeline</div>'
+                f'<div style="font-size: 0.82rem; margin-top: 4px;">'
+                f'<strong>Faltantes:</strong> {faltantes_str}<br>'
+                f'<strong>Con errores:</strong> {con_error_str}'
+                f'</div>'
+                f'</div>',
                 unsafe_allow_html=True,
             )
 

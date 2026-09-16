@@ -62,12 +62,45 @@ def main():
     print("=" * 50)
 
     print("\nDatos de evaluación:")
-    print(f"- X_test: {shapes['n_test']:,d} registros")
+    print(f"- X_valid: {shapes['n_valid']:,d} registros ({shapes['n_fallas_valid']} fallas en validación)")
+    print(f"- X_test : {shapes['n_test']:,d} registros ({shapes['n_fallas_test']} fallas en test)")
     print(f"- Variables predictoras: {shapes['n_features']}")
-    print(f"- Variable objetivo: {shapes['target_name']} ({shapes['n_fallas_test']} fallas en test)")
+    print(f"- Variable objetivo: {shapes['target_name']}")
+
+    val_comp = results.get("validation_comparison_df")
+    if val_comp is not None:
+        print("\n" + "-" * 50)
+        print("1. COMPARACIÓN Y SELECCIÓN EN VALIDACIÓN (X_valid)")
+        print("-" * 50)
+        print(
+            val_comp[
+                [
+                    "Modelo",
+                    "Accuracy_Pct",
+                    "Precision_Pct",
+                    "Recall_Pct",
+                    "F1-Score_Pct",
+                    "ROC-AUC_Pct",
+                    "Falsos_Negativos (FN)",
+                ]
+            ]
+            .rename(
+                columns={
+                    "Accuracy_Pct": "Accuracy (%)",
+                    "Precision_Pct": "Precision (%)",
+                    "Recall_Pct": "Recall (%)",
+                    "F1-Score_Pct": "F1-Score (%)",
+                    "ROC-AUC_Pct": "ROC-AUC (%)",
+                    "Falsos_Negativos (FN)": "FN (Fallas Omitidas)",
+                }
+            )
+            .to_string(index=False)
+        )
+        print(f"\nModelo seleccionado en Validación: {selected_info['nombre_modelo']}")
+        print(f"Criterio y Motivo: {justification}")
 
     print("\n" + "-" * 50)
-    print("EVALUACIÓN DE MODELOS")
+    print("2. EVALUACIÓN FINAL EN CONJUNTO DE PRUEBA (X_test)")
     print("-" * 50)
 
     for key in ["regresion_logistica", "random_forest", "xgboost"]:
@@ -82,10 +115,9 @@ def main():
             print(f"ROC-AUC: {m['roc_auc']*100:.2f} %")
 
     print("\n" + "-" * 50)
-    print("COMPARACIÓN")
+    print("TABLA COMPARATIVA FINAL EN TEST")
     print("-" * 50)
 
-    print("\nTabla comparativa (ordenada por mejor desempeño en detección y balance):")
     print(
         comp_df[
             [
@@ -110,9 +142,6 @@ def main():
         )
         .to_string(index=False)
     )
-
-    print(f"\nModelo seleccionado: {selected_info['nombre_modelo']}")
-    print(f"Motivo: {justification}")
 
     print("\n" + "-" * 50)
     print("PREDICCIÓN DE FALLAS")

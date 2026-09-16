@@ -26,6 +26,11 @@ class FeatureConfig:
     equipment_id_column: str = "Identificador_Equipo"
     split_column: str = "Conjunto_Temporal"
 
+    # Parámetros de partición temporal y purga
+    target_horizon_days: int = 7
+    val_start_date: str = "2026-03-05"
+    test_start_date: str = "2026-06-05"
+
     # Variables operativas base
     operational_variables: List[str] = field(
         default_factory=lambda: [
