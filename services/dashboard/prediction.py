@@ -20,7 +20,7 @@ def render_prediction_page(
     feature_columns: List[str],
 ):
     """Renderiza la interfaz operativa de predicción de fallas con histórico temporal y FastAPI."""
-    st.markdown("<div class='main-header'>🔮 Diagnóstico y Predicción de Fallas</div>", unsafe_allow_html=True)
+    st.markdown("<div class='main-header'>Diagnóstico y Predicción de Fallas</div>", unsafe_allow_html=True)
     st.markdown(
         "<div class='sub-header'>Selecciona un equipo industrial y una fecha para evaluar su riesgo predictivo o simular escenarios en FastAPI.</div>",
         unsafe_allow_html=True,
@@ -53,7 +53,7 @@ def render_prediction_page(
     col_eq1, col_eq2 = st.columns([1.5, 1])
     with col_eq1:
         selected_option = st.selectbox(
-            "🏭 Selecciona el Equipo a Diagnosticar:",
+            "Selecciona el Equipo a Diagnosticar:",
             options=opciones_equipos,
             index=0,
         )
@@ -82,7 +82,7 @@ def render_prediction_page(
 
     with col_eq2:
         selected_date = st.selectbox(
-            "📅 Selecciona la Fecha de Telemetría:",
+            "Selecciona la Fecha de Telemetría:",
             options=fechas_disponibles,
             index=0,
             help="Selecciona cualquier fecha del historial para cargar los sensores exactos registrados en ese día.",
@@ -92,15 +92,15 @@ def render_prediction_page(
     st.markdown("**Atajos de Fecha para este Equipo:**")
     btn_col1, btn_col2, btn_col3 = st.columns(3)
     with btn_col1:
-        if st.button(f"🚨 Día de Mayor Riesgo ({max_risk_date})", use_container_width=True):
+        if st.button(f"Día de Mayor Riesgo ({max_risk_date})", use_container_width=True):
             selected_date = max_risk_date
             st.rerun()
     with btn_col2:
-        if st.button(f"🟢 Día Normal Inicial ({fechas_disponibles[-1]})", use_container_width=True):
+        if st.button(f"Día Normal Inicial ({fechas_disponibles[-1]})", use_container_width=True):
             selected_date = fechas_disponibles[-1]
             st.rerun()
     with btn_col3:
-        if st.button(f"📅 Última Fecha ({fechas_disponibles[0]})", use_container_width=True):
+        if st.button(f"Última Fecha ({fechas_disponibles[0]})", use_container_width=True):
             selected_date = fechas_disponibles[0]
             st.rerun()
 
@@ -122,14 +122,14 @@ def render_prediction_page(
     # 3. Línea de tiempo interactiva de la probabilidad de falla
     if not df_equipo_preds.empty:
         st.markdown("---")
-        st.subheader("📈 Evolución Histórica de la Probabilidad de Falla de este Equipo")
+        st.subheader("Evolución Histórica de la Probabilidad de Falla de este Equipo")
         st.caption("Gráfico interactivo con todas las fechas evaluadas. Observa los picos de alerta crítica en los días previos a fallas reales.")
         timeline_fig = plot_equipment_timeline(df_equipo_preds, current_date=selected_date)
         st.plotly_chart(timeline_fig, use_container_width=True)
 
     # 4. Formulario con las variables operativas de esa fecha
     st.markdown("---")
-    st.subheader(f"⚙️ Sensores y Telemetría al {selected_date}")
+    st.subheader(f"Sensores y Telemetría al {selected_date}")
     st.caption("Los valores se han autocompletado con la medición real de esa fecha. Puedes modificarlos para simular qué pasaría si cambias la temperatura o vibración.")
 
     col_var1, col_var2, col_var3 = st.columns(3)
@@ -220,7 +220,7 @@ def render_prediction_page(
 
     # 5. Botón de Inferencia con FastAPI
     st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("🔮 REALIZAR PREDICCIÓN EN ESTA FECHA (VÍA FASTAPI)", type="primary", use_container_width=True):
+    if st.button("REALIZAR PREDICCIÓN EN ESTA FECHA (VÍA FASTAPI)", type="primary", use_container_width=True):
         with st.spinner("Enviando telemetría al backend FastAPI (POST /predict)..."):
             try:
                 api_resp = predict_via_api(
@@ -231,7 +231,7 @@ def render_prediction_page(
 
                 risk_info = config.get_risk_level(api_resp["probabilidad_falla_7_dias"])
 
-                st.markdown("### 📊 Diagnóstico Inmediato de FastAPI")
+                st.markdown("### Diagnóstico Inmediato de FastAPI")
                 render_prediction_result_box(api_resp, risk_info)
 
                 # Registrar en el historial
@@ -250,18 +250,18 @@ def render_prediction_page(
                     "Estado": "Alerta de Falla" if api_resp["prediccion_clase"] == 1 else "Normal",
                 }
                 save_prediction_to_history(config, record)
-                st.success(f"✅ Inferencia completada y registrada en el historial para la fecha {selected_date}.")
+                st.success(f"Inferencia completada y registrada en el historial para la fecha {selected_date}.")
 
             except Exception as e:
                 st.error(
-                    f"⚠️ **API no disponible:** Verifique que FastAPI esté en ejecución (`uvicorn services.api.main:app --reload`).\n\n"
+                    f"**API no disponible:** Verifique que FastAPI esté en ejecución (`uvicorn services.api.main:app --reload`).\n\n"
                     f"*Detalle:* {str(e)}"
                 )
 
     # 6. Tabla completa de todas las observaciones y probabilidades de este equipo
     if not df_equipo_preds.empty:
         st.markdown("---")
-        st.subheader(f"📋 Historial Completo de Predicciones del Modelo para {active_row.get('Nombre_Equipo')}")
+        st.subheader(f"Historial Completo de Predicciones del Modelo para {active_row.get('Nombre_Equipo')}")
         st.caption(f"Mostrando todas las {len(df_equipo_preds)} fechas evaluadas en el conjunto de prueba independiente.")
 
         cols_table = [

@@ -17,12 +17,9 @@ from services.dashboard.utils import (
     load_evaluation_summary,
     load_prediction_history,
     check_api_health,
-    get_api_models,
-    set_active_model_via_api,
 )
 from services.dashboard.components import (
     apply_custom_styles,
-    render_api_status_badge,
     render_kpi_cards,
     plot_probability_by_equipment,
     plot_risk_distribution_pie,
@@ -35,7 +32,6 @@ from services.dashboard.data_pipeline_page import render_data_pipeline_page
 def main():
     st.set_page_config(
         page_title="GELATO PREDICT | Sistema de Mantenimiento 4.0",
-        page_icon="🏭",
         layout="wide",
         initial_sidebar_state="expanded",
     )
@@ -44,8 +40,7 @@ def main():
     config = DashboardConfig(base_dir=BASE_DIR)
 
     # 1. Comprobar estado de FastAPI
-    is_api_connected, health_data = check_api_health(config.api_base_url)
-    api_models, active_model_backend = get_api_models(config.api_base_url) if is_api_connected else ([], "modelo_random_forest.joblib")
+    is_api_connected, _ = check_api_health(config.api_base_url)
 
     # Cargar datos procesados base y resumen de evaluación
     df_full = load_dataset_modelado(config.processed_data_dir)
@@ -58,12 +53,11 @@ def main():
     except Exception:
         feature_columns = []
 
-    # 2. Barra Lateral (Sidebar Estilo AdminLTE / Next.js Pro)
+    # 2. Barra Lateral (Sidebar Estilo AdminLTE / Next.js Pro sin íconos)
     with st.sidebar:
         st.markdown(
             """
-            <div class="admin-brand-box">
-                <div class="admin-brand-icon">📊</div>
+            <div class="admin-brand-box" style="padding: 12px 14px;">
                 <div class="admin-brand-text">
                     <div class="admin-brand-name">Ciencia de Datos</div>
                     <div class="admin-brand-version">v1.0.0</div>
@@ -75,15 +69,15 @@ def main():
 
         # Inicializar página activa en session_state
         if "current_page" not in st.session_state:
-            st.session_state["current_page"] = "🏠 Panel General"
+            st.session_state["current_page"] = "Panel General"
 
         nav_items = [
-            ("🏠 Panel General", "panel"),
-            ("📥 Carga y Pipeline", "pipeline"),
-            ("🔮 Diagnóstico y Predicción", "prediccion"),
-            ("📊 Análisis de Modelos", "analisis"),
-            ("📋 Historial Operativo", "historial"),
-            ("🧠 Laboratorio de Modelos", "laboratorio"),
+            ("Panel General", "panel"),
+            ("Carga y Pipeline", "pipeline"),
+            ("Diagnóstico y Predicción", "prediccion"),
+            ("Análisis de Modelos", "analisis"),
+            ("Historial Operativo", "historial"),
+            ("Laboratorio de Modelos", "laboratorio"),
         ]
 
         for label, key_id in nav_items:
@@ -99,43 +93,30 @@ def main():
 
         menu_option = st.session_state["current_page"]
 
-        st.markdown('<div class="sidebar-section-title">⚙️ Motor de Inferencia (API)</div>', unsafe_allow_html=True)
-
-        # Estado de conexión con FastAPI
-        render_api_status_badge(
-            is_connected=is_api_connected,
-            active_model=active_model_backend,
-            api_url=config.api_base_url,
-        )
-
-        # Selector de Modelo Activo
-        if is_api_connected and api_models:
-            model_options = {f"{m['name']} ({m['filename']})": m['filename'] for m in api_models}
-            current_idx = 0
-            for idx, (label, fname) in enumerate(model_options.items()):
-                if fname == active_model_backend:
-                    current_idx = idx
-                    break
-
-            selected_label = st.selectbox(
-                "Modelo en Producción:",
-                options=list(model_options.keys()),
-                index=current_idx,
-                help="El modelo seleccionado será ejecutado por el backend FastAPI en /predict.",
+        # Footer con estado de conexión limpio al final del Sidebar
+        if is_api_connected:
+            st.markdown(
+                """
+                <div style="font-size: 0.78rem; font-weight: 700; color: #10B981; text-align: center; margin-top: 60px; padding: 8px 12px; background: rgba(16, 185, 129, 0.08); border-radius: 6px; letter-spacing: 0.03em;">
+                    ● BACKEND ONLINE
+                </div>
+                """,
+                unsafe_allow_html=True,
             )
-            selected_fname = model_options[selected_label]
-
-            if selected_fname != active_model_backend:
-                if st.button("🔄 Aplicar en Producción", use_container_width=True):
-                    if set_active_model_via_api(config.api_base_url, selected_fname):
-                        st.success(f"Modelo cambiado a: {selected_fname}")
-                        st.rerun()
+        else:
+            st.markdown(
+                """
+                <div style="font-size: 0.78rem; font-weight: 700; color: #EF4444; text-align: center; margin-top: 60px; padding: 8px 12px; background: rgba(239, 68, 68, 0.08); border-radius: 6px; letter-spacing: 0.03em;">
+                    ● BACKEND OFFLINE
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
         st.markdown(
             """
-            <div style="font-size: 0.72rem; color: #475569; text-align: center; margin-top: 25px; line-height: 1.4;">
-                <strong>Área de Helados</strong><br>
-                
+            <div style="font-size: 0.72rem; color: #475569; text-align: center; margin-top: 15px; line-height: 1.4;">
+                <strong>Área de Helados</strong>
             </div>
             """,
             unsafe_allow_html=True,
@@ -146,8 +127,8 @@ def main():
     # ----------------------------------------------------
     # SECCIÓN 1: PANEL GENERAL (DASHBOARD)
     # ----------------------------------------------------
-    if menu_option == "🏠 Panel General":
-        st.markdown(f"<div class='main-header'>🏭 {config.app_title}</div>", unsafe_allow_html=True)
+    if menu_option == "Panel General":
+        st.markdown(f"<div class='main-header'>{config.app_title}</div>", unsafe_allow_html=True)
         st.markdown(f"<div class='sub-header'>{config.app_subtitle} — {config.app_description}</div>", unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
 
@@ -201,7 +182,7 @@ def main():
 
         # Tabla Completa de Predicciones con Filtros Interactivos
         st.markdown("---")
-        st.subheader("📋 Explorador de Predicciones del Modelo Final (2,436 Observaciones)")
+        st.subheader("Explorador de Predicciones del Modelo Final")
         st.caption("Visualiza y filtra todas las evaluaciones del conjunto de prueba independiente (`predicciones_modelo_final.csv`).")
 
         if not df_preds_final.empty:
@@ -259,22 +240,28 @@ def main():
             )
 
     # ----------------------------------------------------
-    # SECCIÓN 2: PREDICCIÓN (DIAGNÓSTICO EN TIEMPO REAL)
+    # SECCIÓN 2: CARGA Y PIPELINE
     # ----------------------------------------------------
-    elif menu_option == "🔮 Diagnóstico y Predicción":
+    elif menu_option == "Carga y Pipeline":
+        render_data_pipeline_page(config=config)
+
+    # ----------------------------------------------------
+    # SECCIÓN 3: PREDICCIÓN (DIAGNÓSTICO EN TIEMPO REAL)
+    # ----------------------------------------------------
+    elif menu_option == "Diagnóstico y Predicción":
         render_prediction_page(
             config=config,
             feature_columns=feature_columns,
         )
 
     # ----------------------------------------------------
-    # SECCIÓN 3: ANÁLISIS DE MODELOS
+    # SECCIÓN 4: ANÁLISIS DE MODELOS
     # ----------------------------------------------------
-    elif menu_option == "📊 Análisis de Modelos":
-        st.markdown("<div class='main-header'>📊 Análisis Comparativo y Desempeño de Modelos</div>", unsafe_allow_html=True)
+    elif menu_option == "Análisis de Modelos":
+        st.markdown("<div class='main-header'>Análisis Comparativo y Desempeño de Modelos</div>", unsafe_allow_html=True)
         st.markdown("<div class='sub-header'>Resultados formales de la evaluación de modelos sobre el conjunto de prueba independiente.</div>", unsafe_allow_html=True)
 
-        st.subheader("🏆 Comparativa de Rendimiento en Conjunto de Prueba (X_test)")
+        st.subheader("Comparativa de Rendimiento en Conjunto de Prueba (X_test)")
         df_comp = eval_summary["tabla_comparacion"]
         if not df_comp.empty:
             st.dataframe(
@@ -290,13 +277,13 @@ def main():
             )
 
         st.markdown("---")
-        st.subheader("🛡️ Diagnóstico de Estabilidad y Control de Sobreajuste (Train / Valid / Test)")
+        st.subheader("Diagnóstico de Estabilidad y Control de Sobreajuste (Train / Valid / Test)")
         df_stab = eval_summary["diagnostico_estabilidad"]
         if not df_stab.empty:
             st.dataframe(df_stab, use_container_width=True, hide_index=True)
 
         st.markdown("---")
-        st.subheader("📈 Comparativa Multi-Modelo por Fecha (Test Set)")
+        st.subheader("Comparativa Multi-Modelo por Fecha (Test Set)")
         df_all_models = pd.read_csv(config.evaluation_results_dir / "predicciones_todos_modelos_test.csv", encoding="utf-8-sig")
         if not df_all_models.empty:
             st.dataframe(
@@ -312,10 +299,10 @@ def main():
             )
 
     # ----------------------------------------------------
-    # SECCIÓN 4: HISTORIAL OPERATIVO
+    # SECCIÓN 5: HISTORIAL OPERATIVO
     # ----------------------------------------------------
-    elif menu_option == "📋 Historial Operativo":
-        st.markdown("<div class='main-header'>📋 Historial de Predicciones Operativas</div>", unsafe_allow_html=True)
+    elif menu_option == "Historial Operativo":
+        st.markdown("<div class='main-header'>Historial de Predicciones Operativas</div>", unsafe_allow_html=True)
         st.markdown("<div class='sub-header'>Consulta y filtra todas las evaluaciones predictivas registradas en la planta.</div>", unsafe_allow_html=True)
 
         df_hist = load_prediction_history(config)
@@ -345,25 +332,19 @@ def main():
 
             csv_data = df_filtered.to_csv(index=False, encoding="utf-8-sig")
             st.download_button(
-                label="📥 Descargar Historial en CSV",
+                label="Descargar Historial en CSV",
                 data=csv_data,
                 file_name="historial_predicciones_mantenimiento.csv",
                 mime="text/csv",
             )
         else:
-            st.info("ℹ️ Aún no hay predicciones en el historial. Realiza una predicción en la pestaña '🔮 Diagnóstico y Predicción' para registrarla.")
+            st.info("Aún no hay predicciones en el historial. Realiza una predicción en la pestaña 'Diagnóstico y Predicción' para registrarla.")
 
     # ----------------------------------------------------
-    # SECCIÓN 5: LABORATORIO DE EXPERIMENTACIÓN / MODELOS
+    # SECCIÓN 6: LABORATORIO DE EXPERIMENTACIÓN / MODELOS
     # ----------------------------------------------------
-    elif menu_option == "🧠 Laboratorio de Modelos":
+    elif menu_option == "Laboratorio de Modelos":
         render_model_lab_page(config=config)
-
-    # ----------------------------------------------------
-    # SECCIÓN 6: CARGA DE DATOS Y PIPELINE
-    # ----------------------------------------------------
-    elif menu_option == "📥 Carga y Pipeline":
-        render_data_pipeline_page(config=config)
 
 
 if __name__ == "__main__":

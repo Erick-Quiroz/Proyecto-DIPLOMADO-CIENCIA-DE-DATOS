@@ -34,7 +34,7 @@ from services.dashboard.utils import (
 
 def render_model_lab_page(config: DashboardConfig):
     """Renderiza el Laboratorio de Modelos para experimentación controlada y promoción de modelos."""
-    st.markdown("<div class='main-header'>🧠 Laboratorio de Modelos de Machine Learning</div>", unsafe_allow_html=True)
+    st.markdown("<div class='main-header'>Laboratorio de Modelos de Machine Learning</div>", unsafe_allow_html=True)
     st.markdown(
         "<div class='sub-header'>Ajusta hiperparámetros, reentrena sobre Train, valida en Validation y promueve modelos a producción en FastAPI.</div>",
         unsafe_allow_html=True,
@@ -43,7 +43,7 @@ def render_model_lab_page(config: DashboardConfig):
     st.markdown(
         """
         <div class="custom-info-box">
-            🛡️ <strong>Garantía de Integridad Metodológica:</strong><br>
+            <strong>Garantía de Integridad Metodológica:</strong><br>
             El Laboratorio entrena <strong>estrictamente con particiones de Entrenamiento y Validación</strong>.<br>
             El conjunto de Prueba independiente permanece aislado para evitar sobreajuste y fuga de información.
         </div>
@@ -74,7 +74,7 @@ def render_model_lab_page(config: DashboardConfig):
         )
 
     # 2. Configuración de Hiperparámetros según el modelo
-    st.subheader(f"⚙️ Configuración de Hiperparámetros: {model_choice}")
+    st.subheader(f"Configuración de Hiperparámetros: {model_choice}")
     hyperparams = {}
 
     if model_choice == "Regresión Logística":
@@ -91,7 +91,7 @@ def render_model_lab_page(config: DashboardConfig):
                 hyperparams["penalty"] = None
             hyperparams["random_state"] = 42
 
-        st.caption("ℹ️ Nota: Regresión Logística incluye automáticamente `StandardScaler` encapsulado dentro del Pipeline.")
+        st.caption("Nota: Regresión Logística incluye automáticamente `StandardScaler` encapsulado dentro del Pipeline.")
 
     elif model_choice == "Random Forest":
         col_hp1, col_hp2, col_hp3 = st.columns(3)
@@ -125,7 +125,7 @@ def render_model_lab_page(config: DashboardConfig):
 
     # 3. Botón de Entrenamiento
     st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("🚀 ENTRENAR MODELO CON ESTOS HIPERPARÁMETROS", type="primary", use_container_width=True):
+    if st.button("ENTRENAR MODELO CON ESTOS HIPERPARÁMETROS", type="primary", use_container_width=True):
         with st.spinner("Entrenando modelo exclusivamente sobre X_train (12,412 registros)..."):
             start_time = time.time()
 
@@ -154,7 +154,7 @@ def render_model_lab_page(config: DashboardConfig):
             st.session_state["lab_y_valid"] = y_valid
             st.session_state["lab_saved_path"] = None
 
-            st.success(f"✅ ¡Entrenamiento completado en {train_duration:.3f} segundos!")
+            st.success(f"Entrenamiento completado en {train_duration:.3f} segundos.")
 
     # 4. Mostrar Resultados de Validación
     if "lab_last_model" in st.session_state:
@@ -166,13 +166,13 @@ def render_model_lab_page(config: DashboardConfig):
         current_params = st.session_state["lab_hyperparams"]
 
         st.markdown("---")
-        st.subheader("📊 Evaluación sobre Validación (X_valid - 2,668 registros)")
+        st.subheader("Evaluación sobre Validación (X_valid - 2,668 registros)")
 
         # Simulador de Threshold
         col_th1, col_th2 = st.columns([1, 2])
         with col_th1:
             threshold = st.slider(
-                "🎯 Umbral de Decisión (Threshold):",
+                "Umbral de Decisión (Threshold):",
                 min_value=0.10,
                 max_value=0.90,
                 value=0.50,
@@ -243,7 +243,7 @@ def render_model_lab_page(config: DashboardConfig):
             st.plotly_chart(tradeoff_fig, use_container_width=True)
 
         # 5. Guardar Modelo y Promover a Producción
-        st.markdown("### 💾 Persistencia y Promoción de Modelos")
+        st.markdown("### Persistencia y Promoción de Modelos")
         col_sv1, col_sv2 = st.columns([2, 1])
 
         with col_sv1:
@@ -257,7 +257,7 @@ def render_model_lab_page(config: DashboardConfig):
 
         with col_sv2:
             st.markdown("<br>", unsafe_allow_html=True)
-            if st.button("💾 GUARDAR MODELO", use_container_width=True):
+            if st.button("GUARDAR MODELO", use_container_width=True):
                 clean_filename = f"{save_name_input.strip()}.joblib"
                 save_path = config.lab_models_dir / clean_filename
 
@@ -280,7 +280,7 @@ def render_model_lab_page(config: DashboardConfig):
                     "hiperparametros": str(current_params),
                 }
                 save_experiment_to_csv(config, exp_record)
-                st.success(f"🎉 Modelo guardado como `{clean_filename}` en `models/laboratorio/`.")
+                st.success(f"Modelo guardado como `{clean_filename}` en `models/laboratorio/`.")
 
         # Botón para Establecer como Modelo Activo en FastAPI
         if st.session_state.get("lab_saved_path"):
@@ -288,18 +288,17 @@ def render_model_lab_page(config: DashboardConfig):
             st.markdown(
                 f"""
                 <div style="background-color: #FEF3C7; border-left: 5px solid #F59E0B; padding: 15px; border-radius: 6px; margin: 15px 0;">
-                    <strong>⭐ Promoción a Modelo Activo en Producción:</strong><br>
+                    <strong>Promoción a Modelo Activo en Producción:</strong><br>
                     ¿Deseas activar <code>{saved_fname}</code> en el backend de FastAPI para las predicciones en vivo?
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
-            if st.button("⭐ ESTABLECER COMO MODELO ACTIVO EN FASTAPI", type="secondary"):
+            if st.button("ESTABLECER COMO MODELO ACTIVO EN FASTAPI", type="secondary"):
                 success = set_active_model_via_api(config.api_base_url, saved_fname)
                 if success:
-                    st.success(f"🚀 ¡El modelo `{saved_fname}` ahora es el MODELO ACTIVO en FastAPI!")
-                    st.balloons()
+                    st.success(f"El modelo `{saved_fname}` ahora es el MODELO ACTIVO en FastAPI.")
                 else:
                     # Si la API no está corriendo, persistir directamente en archivo de config
                     config.set_active_model_filename(saved_fname)
@@ -307,7 +306,7 @@ def render_model_lab_page(config: DashboardConfig):
 
     # 6. Historial de Experimentos
     st.markdown("---")
-    st.subheader("📋 Registro de Experimentos de Laboratorio")
+    st.subheader("Registro de Experimentos de Laboratorio")
     df_exp = load_experiments_history(config)
 
     if not df_exp.empty:

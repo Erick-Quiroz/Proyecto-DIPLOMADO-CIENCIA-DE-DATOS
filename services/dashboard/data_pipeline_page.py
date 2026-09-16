@@ -24,21 +24,18 @@ def render_dataset_upload_card(
     val_res = validator.validate_file_on_disk(schema.filename)
     status = val_res["status"]
 
-    # Definir colores e íconos de estado
+    # Definir colores y etiquetas de estado
     if status == "valid":
-        status_icon = "✅"
         status_text = "Cargado y Válido"
         badge_bg = "rgba(16, 185, 129, 0.15)"
         badge_border = "#10B981"
         badge_color = "#059669"
     elif status == "warning":
-        status_icon = "⚠️"
         status_text = "Cargado con Errores"
         badge_bg = "rgba(245, 158, 11, 0.15)"
         badge_border = "#F59E0B"
         badge_color = "#D97706"
     else:
-        status_icon = "❌"
         status_text = "Faltante" if schema.is_mandatory else "No Cargado (Opcional)"
         badge_bg = "rgba(239, 68, 68, 0.15)"
         badge_border = "#EF4444"
@@ -52,8 +49,8 @@ def render_dataset_upload_card(
                 <div style="font-weight: 700; font-size: 1.05rem; color: #1E293B;">
                     {schema.label} <code style="font-size: 0.82rem; background: #F1F5F9; color: #475569; padding: 2px 6px; border-radius: 4px;">{schema.filename}</code>
                 </div>
-                <div style="background: {badge_bg}; border: 1px solid {badge_border}; color: {badge_color}; padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; display: flex; align-items: center; gap: 5px;">
-                    {status_icon} {status_text}
+                <div style="background: {badge_bg}; border: 1px solid {badge_border}; color: {badge_color}; padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700;">
+                    {status_text}
                 </div>
             </div>
             <div style="font-size: 0.85rem; color: #64748B; margin-bottom: 12px;">
@@ -87,14 +84,14 @@ def render_dataset_upload_card(
             validation_memory = validator.validate_single_dataframe(df_uploaded, schema, source_name=uploaded_file.name)
 
             if validation_memory["errors"]:
-                st.warning(f"⚠️ El archivo subido presenta observaciones de validación:")
+                st.warning("El archivo subido presenta observaciones de validación:")
                 for err in validation_memory["errors"]:
                     st.markdown(f"- **{err['error_type']}** ({err['column']}): {err['description']}")
 
             # Guardar el archivo en data/raw/
             raw_data_dir.mkdir(parents=True, exist_ok=True)
             df_uploaded.to_csv(dest_path, index=False, encoding="utf-8-sig")
-            st.success(f"✅ Archivo guardado correctamente en `data/raw/{schema.filename}` ({len(df_uploaded):,d} filas).")
+            st.success(f"Archivo guardado correctamente en data/raw/{schema.filename} ({len(df_uploaded):,d} filas).")
             # Forzar revalidación visual
             st.rerun()
 
@@ -104,10 +101,10 @@ def render_dataset_upload_card(
             st.markdown(
                 f"""
                 <div style="font-size: 0.82rem; color: #334155; line-height: 1.6; background: #F8FAFC; padding: 10px 14px; border-radius: 8px; border: 1px solid #E2E8F0;">
-                    <div>📊 <strong>Registros:</strong> {val_res['row_count']:,d} filas</div>
-                    <div>📐 <strong>Columnas:</strong> {val_res['col_count']} variables</div>
-                    {f"<div>🏭 <strong>Equipos detectados:</strong> {val_res['unique_equipos']}</div>" if val_res['unique_equipos'] > 0 else ""}
-                    <div style="color: #059669; font-weight: 600; margin-top: 4px;">✔ Todas las columnas requeridas presentes</div>
+                    <div><strong>Registros:</strong> {val_res['row_count']:,d} filas</div>
+                    <div><strong>Columnas:</strong> {val_res['col_count']} variables</div>
+                    {f"<div><strong>Equipos detectados:</strong> {val_res['unique_equipos']}</div>" if val_res['unique_equipos'] > 0 else ""}
+                    <div style="color: #059669; font-weight: 600; margin-top: 4px;">Todas las columnas requeridas presentes</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -116,7 +113,7 @@ def render_dataset_upload_card(
             st.markdown(
                 f"""
                 <div style="font-size: 0.82rem; color: #991B1B; line-height: 1.5; background: #FEF2F2; padding: 10px 14px; border-radius: 8px; border: 1px solid #FCA5A5;">
-                    <div style="font-weight: 700;">⚠️ Problemas detectados:</div>
+                    <div style="font-weight: 700;">Problemas detectados:</div>
                     {"".join([f"<div>• {e['description']}</div>" for e in val_res['errors'][:3]])}
                 </div>
                 """,
@@ -126,7 +123,7 @@ def render_dataset_upload_card(
             st.markdown(
                 f"""
                 <div style="font-size: 0.82rem; color: #64748B; line-height: 1.5; background: #F8FAFC; padding: 10px 14px; border-radius: 8px; border: 1px dashed #CBD5E1;">
-                    <div>❌ <strong>Archivo no detectado.</strong></div>
+                    <div><strong>Archivo no detectado.</strong></div>
                     <div style="margin-top: 4px;">Suba el archivo correspondiente o asegúrese de que exista en <code>data/raw/{schema.filename}</code>.</div>
                 </div>
                 """,
@@ -138,7 +135,7 @@ def render_dataset_upload_card(
 
 def render_data_pipeline_page(config: DashboardConfig):
     """Página principal de ingestión de CSVs y orquestación del pipeline."""
-    st.markdown("<div class='main-header'>📥 Carga de Datos Crudos y Pipeline de Ciencia de Datos</div>", unsafe_allow_html=True)
+    st.markdown("<div class='main-header'>Carga de Datos Crudos y Pipeline de Ciencia de Datos</div>", unsafe_allow_html=True)
     st.markdown(
         "<div class='sub-header'>Cargue nuevos datasets CSV independientes, valide esquemas en tiempo real y ejecute nuevamente todo el proceso de Ciencia de Datos desde cero.</div>",
         unsafe_allow_html=True,
@@ -172,7 +169,7 @@ def render_data_pipeline_page(config: DashboardConfig):
     validator = DataValidator(config.raw_data_dir)
 
     # 2. Sección de carga de cada CSV
-    st.subheader("📂 1. Carga Independiente de Datasets Crudos")
+    st.subheader("1. Carga Independiente de Datasets Crudos")
     st.caption("Cada dataset cuenta con su propio campo de carga dedicado. No se mezclarán ni asumirán nombres genéricos.")
 
     for schema_key in RAW_DATASETS_SCHEMAS.keys():
@@ -183,7 +180,7 @@ def render_data_pipeline_page(config: DashboardConfig):
         )
 
     # 3. Resumen y Validación Obligatoria Previa
-    st.subheader("🛡️ 2. Validación de Estado de Datasets")
+    st.subheader("2. Validación de Estado de Datasets")
     val_summary = validator.validate_all_mandatory_datasets()
     can_execute = val_summary["can_execute_pipeline"]
 
@@ -193,18 +190,18 @@ def render_data_pipeline_page(config: DashboardConfig):
         st.markdown("**Estado actual de los datasets requeridos:**")
         for fn, res in val_summary["datasets"].items():
             if res["status"] == "valid":
-                st.markdown(f"✅ **`{fn}`** — Válido ({res['row_count']:,d} registros, {res['col_count']} columnas)")
+                st.markdown(f"**`{fn}`** — Válido ({res['row_count']:,d} registros, {res['col_count']} columnas)")
             elif res["status"] == "warning":
-                st.markdown(f"⚠️ **`{fn}`** — Con observaciones ({len(res['errors'])} inconsistencias detectadas)")
+                st.markdown(f"**`{fn}`** — Con observaciones ({len(res['errors'])} inconsistencias detectadas)")
             else:
-                st.markdown(f"❌ **`{fn}`** — **FALTANTE OBLIGATORIO**")
+                st.markdown(f"**`{fn}`** — **FALTANTE OBLIGATORIO**")
 
     with col_st2:
         if can_execute:
             st.markdown(
                 """
                 <div style="background-color: #ECFDF5; border-left: 5px solid #10B981; padding: 14px 18px; border-radius: 8px; color: #065F46;">
-                    <div style="font-weight: 700; font-size: 0.95rem;">✅ Todos los datasets obligatorios están listos</div>
+                    <div style="font-weight: 700; font-size: 0.95rem;">Todos los datasets obligatorios están listos</div>
                     <div style="font-size: 0.82rem; margin-top: 4px;">Esquemas y columnas validados. Puede iniciar la ejecución completa del pipeline.</div>
                 </div>
                 """,
@@ -216,7 +213,7 @@ def render_data_pipeline_page(config: DashboardConfig):
             st.markdown(
                 f"""
                 <div style="background-color: #FEF2F2; border-left: 5px solid #EF4444; padding: 14px 18px; border-radius: 8px; color: #991B1B;">
-                    <div style="font-weight: 700; font-size: 0.95rem;">❌ No se puede ejecutar el pipeline</div>
+                    <div style="font-weight: 700; font-size: 0.95rem;">No se puede ejecutar el pipeline</div>
                     <div style="font-size: 0.82rem; margin-top: 4px;">
                         <strong>Faltantes:</strong> {faltantes_str}<br>
                         <strong>Con errores:</strong> {con_error_str}
@@ -228,7 +225,7 @@ def render_data_pipeline_page(config: DashboardConfig):
 
     # 4. Detalle de Errores si existen
     if val_summary["all_errors"]:
-        with st.expander("🔍 Ver Detalle de Inconsistencias de Validación", expanded=not can_execute):
+        with st.expander("Ver Detalle de Inconsistencias de Validación", expanded=not can_execute):
             for err in val_summary["all_errors"]:
                 st.error(
                     f"**Dataset:** `{err['dataset']}` | **Columna:** `{err['column']}` | **Tipo:** {err['error_type']}\n\n"
@@ -238,14 +235,14 @@ def render_data_pipeline_page(config: DashboardConfig):
     st.markdown("<br>", unsafe_allow_html=True)
 
     # 5. Botón de Ejecución del Pipeline
-    st.subheader("🚀 3. Ejecución Completa del Pipeline de Ciencia de Datos")
+    st.subheader("3. Ejecución Completa del Pipeline de Ciencia de Datos")
     st.caption("Re-entrenará los modelos, recalculará el EDA, dividirá los conjuntos y regenerará todas las métricas exclusivamente con los nuevos datos.")
 
     btn_col1, btn_col2 = st.columns([1, 1.5])
 
     with btn_col1:
         run_btn = st.button(
-            "🚀 EJECUTAR PIPELINE COMPLETO",
+            "EJECUTAR PIPELINE COMPLETO",
             type="primary",
             use_container_width=True,
             disabled=not can_execute,
@@ -260,7 +257,7 @@ def render_data_pipeline_page(config: DashboardConfig):
         def update_progress(step: int, total: int, message: str):
             pct = int((step / total) * 100)
             progress_bar.progress(pct, text=f"Paso {step}/{total}: {message}")
-            status_box.info(f"⏳ **Ejecutando:** {message}")
+            status_box.info(f"**Ejecutando:** {message}")
 
         try:
             with st.spinner("Procesando pipeline de Ciencia de Datos..."):
@@ -270,12 +267,12 @@ def render_data_pipeline_page(config: DashboardConfig):
             # Limpiar caché de Streamlit para recargar todo de forma inmediata
             st.cache_data.clear()
 
-            progress_bar.progress(100, text="¡Pipeline finalizado con éxito!")
-            status_box.success(f"🎉 **Pipeline de Ciencia de Datos completado con éxito en {results['elapsed_seconds']} segundos.**")
+            progress_bar.progress(100, text="Pipeline finalizado con éxito.")
+            status_box.success(f"Pipeline de Ciencia de Datos completado con éxito en {results['elapsed_seconds']} segundos.")
 
             # Mostrar resumen de resultados recalculados
             st.markdown("---")
-            st.subheader("📊 Resultados Recalculados Desde Cero con los Nuevos Datos")
+            st.subheader("Resultados Recalculados Desde Cero con los Nuevos Datos")
 
             kpi1, kpi2, kpi3, kpi4 = st.columns(4)
             with kpi1:
@@ -289,7 +286,7 @@ def render_data_pipeline_page(config: DashboardConfig):
 
             # Tabla comparativa de modelos recalculada
             if results.get("tabla_comparacion") is not None and not results["tabla_comparacion"].empty:
-                st.markdown("**🏆 Comparativa de Modelos Recalculada en Conjunto de Prueba:**")
+                st.markdown("**Comparativa de Modelos Recalculada en Conjunto de Prueba:**")
                 st.dataframe(
                     results["tabla_comparacion"].style.format({
                         "Accuracy": "{:.2%}",
@@ -302,20 +299,20 @@ def render_data_pipeline_page(config: DashboardConfig):
                     hide_index=True,
                 )
 
-            st.success("✅ Todos los resultados, predicciones, métricas y gráficos del panel han sido recalculados automáticamente.")
+            st.success("Todos los resultados, predicciones, métricas y gráficos del panel han sido recalculados automáticamente.")
 
             # Acciones posteriores
             col_act1, col_act2 = st.columns(2)
             with col_act1:
-                if st.button("🏠 Ir al Panel General", use_container_width=True):
-                    st.session_state["current_page"] = "🏠 Panel General"
+                if st.button("Ir al Panel General", use_container_width=True):
+                    st.session_state["current_page"] = "Panel General"
                     st.rerun()
             with col_act2:
-                if st.button("📊 Ir a Análisis de Modelos", use_container_width=True):
-                    st.session_state["current_page"] = "📊 Análisis de Modelos"
+                if st.button("Ir a Análisis de Modelos", use_container_width=True):
+                    st.session_state["current_page"] = "Análisis de Modelos"
                     st.rerun()
 
         except Exception as e:
             progress_bar.empty()
-            status_box.error(f"❌ Error durante la ejecución del pipeline: {str(e)}")
+            status_box.error(f"Error durante la ejecución del pipeline: {str(e)}")
             st.exception(e)

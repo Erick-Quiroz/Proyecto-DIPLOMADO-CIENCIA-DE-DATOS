@@ -390,7 +390,6 @@ def render_kpi_cards(
                     <div class="small-box-number" style="color: #1E3A8A;">{total_equipos}</div>
                     <div class="small-box-subtitle">Área de Helados (24/7)</div>
                 </div>
-                <div class="small-box-icon">🏭</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -405,7 +404,6 @@ def render_kpi_cards(
                     <div class="small-box-number" style="color: #059669;">{equipos_bajo:,d}</div>
                     <div class="small-box-subtitle">Riesgo Bajo (&lt; 30%)</div>
                 </div>
-                <div class="small-box-icon">🟢</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -420,7 +418,6 @@ def render_kpi_cards(
                     <div class="small-box-number" style="color: #D97706;">{equipos_medio:,d}</div>
                     <div class="small-box-subtitle">Riesgo Medio (30% - 59%)</div>
                 </div>
-                <div class="small-box-icon">🟡</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -435,7 +432,6 @@ def render_kpi_cards(
                     <div class="small-box-number" style="color: #DC2626;">{equipos_alto:,d}</div>
                     <div class="small-box-subtitle">Riesgo Falla 7D (&ge; 60%)</div>
                 </div>
-                <div class="small-box-icon">🚨</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -488,7 +484,7 @@ def render_prediction_result_box(api_response: Dict[str, Any], risk_info: Dict[s
             <div style="background-color: {risk_info['bg_color']}; border-left: 6px solid {color}; padding: 20px; border-radius: 8px; margin-top: 15px;">
                 <div style="font-size: 0.85rem; font-weight: 700; color: #4B5563; text-transform: uppercase;">Nivel de Riesgo Operativo</div>
                 <div style="font-size: 1.8rem; font-weight: 800; color: {color}; margin: 5px 0;">
-                    {risk_info.get('icon', '⚠️')} RIESGO {label.upper()}
+                    RIESGO {label.upper()}
                 </div>
                 <div style="font-size: 0.95rem; color: #1F2937; margin-top: 8px; line-height: 1.4;">
                     <strong>Recomendación:</strong> {rec}
