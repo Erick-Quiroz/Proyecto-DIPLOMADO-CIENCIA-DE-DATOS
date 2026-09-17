@@ -27,6 +27,7 @@ from services.dashboard.components import (
 from services.dashboard.prediction import render_prediction_page
 from services.dashboard.model_lab import render_model_lab_page
 from services.dashboard.data_pipeline_page import render_data_pipeline_page
+from services.dashboard.auth import check_dashboard_auth, render_sidebar_user_profile
 
 
 def main():
@@ -39,7 +40,11 @@ def main():
     apply_custom_styles()
     config = DashboardConfig(base_dir=BASE_DIR)
 
-    # 1. Comprobar estado de FastAPI
+    # 1. Control de Autenticación Obligatorio (Gatekeeper de Seguridad)
+    if not check_dashboard_auth(config):
+        st.stop()
+
+    # 2. Comprobar estado de FastAPI
     is_api_connected, _ = check_api_health(config.api_base_url)
 
     # Cargar datos procesados base y resumen de evaluación
@@ -53,7 +58,7 @@ def main():
     except Exception:
         feature_columns = []
 
-    # 2. Barra Lateral (Sidebar Estilo AdminLTE / Next.js Pro sin íconos)
+    # 3. Barra Lateral (Sidebar Estilo AdminLTE / Next.js Pro sin íconos)
     with st.sidebar:
         st.markdown(
             """
@@ -66,6 +71,9 @@ def main():
             """,
             unsafe_allow_html=True,
         )
+
+        # Mostrar perfil de usuario autenticado y botón de cerrar sesión
+        render_sidebar_user_profile(config)
 
         # Inicializar página activa en session_state
         if "current_page" not in st.session_state:

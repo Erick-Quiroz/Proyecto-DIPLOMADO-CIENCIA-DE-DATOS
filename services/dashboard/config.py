@@ -29,6 +29,14 @@ class DashboardConfig:
         default_factory=lambda: os.getenv("API_URL", os.getenv("API_BASE_URL", "http://127.0.0.1:8502"))
     )
 
+    # Credenciales de autenticación del Dashboard
+    dashboard_user: str = field(
+        default_factory=lambda: os.getenv("DASHBOARD_USER", "Erick")
+    )
+    dashboard_password: str = field(
+        default_factory=lambda: os.getenv("DASHBOARD_PASSWORD", "9359644")
+    )
+
     # Archivos de persistencia del Dashboard
     history_file: str = "historial_predicciones.csv"
     experiments_file: str = "experimentos_streamlit.csv"
