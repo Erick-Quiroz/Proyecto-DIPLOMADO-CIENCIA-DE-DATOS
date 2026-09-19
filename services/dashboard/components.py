@@ -377,18 +377,24 @@ def render_kpi_cards(
     equipos_bajo: int,
     equipos_medio: int,
     equipos_alto: int,
+    total_observaciones: int = 0,
 ):
     """Renderiza tarjetas KPI estilo Small-Box de AdminLTE para el estado de planta."""
     col1, col2, col3, col4 = st.columns(4)
+
+    tot_obs = total_observaciones if total_observaciones > 0 else (equipos_bajo + equipos_medio + equipos_alto)
+    pct_bajo = f"{(equipos_bajo / tot_obs * 100):.1f}%" if tot_obs > 0 else "0%"
+    pct_medio = f"{(equipos_medio / tot_obs * 100):.1f}%" if tot_obs > 0 else "0%"
+    pct_alto = f"{(equipos_alto / tot_obs * 100):.1f}%" if tot_obs > 0 else "0%"
 
     with col1:
         st.markdown(
             f"""
             <div class="admin-small-box" style="border-top: 4px solid #2563EB;">
                 <div class="small-box-inner">
-                    <div class="small-box-title">Equipos Monitoreados</div>
-                    <div class="small-box-number" style="color: #1E3A8A;">{total_equipos}</div>
-                    <div class="small-box-subtitle">Área de Helados (24/7)</div>
+                    <div class="small-box-title">Observaciones / Equipos</div>
+                    <div class="small-box-number" style="color: #1E3A8A;">{tot_obs:,d}</div>
+                    <div class="small-box-subtitle">{total_equipos} Equipos Monitoreados (24/7)</div>
                 </div>
             </div>
             """,
@@ -402,7 +408,7 @@ def render_kpi_cards(
                 <div class="small-box-inner">
                     <div class="small-box-title" style="color: #059669;">Operación Normal</div>
                     <div class="small-box-number" style="color: #059669;">{equipos_bajo:,d}</div>
-                    <div class="small-box-subtitle">Riesgo Bajo (&lt; 30%)</div>
+                    <div class="small-box-subtitle">Riesgo Bajo (&lt; 30%) · {pct_bajo}</div>
                 </div>
             </div>
             """,
@@ -416,7 +422,7 @@ def render_kpi_cards(
                 <div class="small-box-inner">
                     <div class="small-box-title" style="color: #D97706;">En Observación</div>
                     <div class="small-box-number" style="color: #D97706;">{equipos_medio:,d}</div>
-                    <div class="small-box-subtitle">Riesgo Medio (30% - 59%)</div>
+                    <div class="small-box-subtitle">Riesgo Medio (30% - 59%) · {pct_medio}</div>
                 </div>
             </div>
             """,
@@ -430,7 +436,7 @@ def render_kpi_cards(
                 <div class="small-box-inner">
                     <div class="small-box-title" style="color: #DC2626;">Alertas Críticas</div>
                     <div class="small-box-number" style="color: #DC2626;">{equipos_alto:,d}</div>
-                    <div class="small-box-subtitle">Riesgo Falla 7D (&ge; 60%)</div>
+                    <div class="small-box-subtitle">Riesgo Falla 7D (&ge; 60%) · {pct_alto}</div>
                 </div>
             </div>
             """,
@@ -624,20 +630,19 @@ def plot_probability_by_equipment(df_data: pd.DataFrame) -> go.Figure:
 
 def plot_risk_distribution_pie(df_data: pd.DataFrame, config: DashboardConfig) -> go.Figure:
     """Genera gráfico de dona con la distribución de niveles de riesgo."""
-    prob_col = (
-        "Probabilidad_Falla_7_Dias_Pct"
-        if "Probabilidad_Falla_7_Dias_Pct" in df_data.columns
-        else "Prob_Falla_Random Forest (%)"
-    )
-
-    if df_data.empty or prob_col not in df_data.columns:
+    if df_data.empty:
         return go.Figure()
 
-    levels = []
-    for val in df_data[prob_col]:
-        prob = val / 100.0 if val > 1.0 else val
-        risk_info = config.get_risk_level(prob)
-        levels.append(risk_info["label"])
+    if "Probabilidad_Falla_7_Dias" in df_data.columns:
+        prob_series = df_data["Probabilidad_Falla_7_Dias"]
+    elif "Probabilidad_Falla_7_Dias_Pct" in df_data.columns:
+        prob_series = df_data["Probabilidad_Falla_7_Dias_Pct"] / 100.0
+    elif "Prob_Falla_Random Forest (%)" in df_data.columns:
+        prob_series = df_data["Prob_Falla_Random Forest (%)"] / 100.0
+    else:
+        return go.Figure()
+
+    levels = [config.get_risk_level(float(p))["label"] for p in prob_series]
 
     df_levels = pd.Series(levels).value_counts().reset_index()
     df_levels.columns = ["Nivel", "Cantidad"]

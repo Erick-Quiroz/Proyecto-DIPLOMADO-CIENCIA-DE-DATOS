@@ -148,29 +148,28 @@ def main():
         )
 
         if not df_preds_final.empty:
-            prob_col = (
-                "Probabilidad_Falla_7_Dias_Pct"
-                if "Probabilidad_Falla_7_Dias_Pct" in df_preds_final.columns
-                else "Prob_Falla_Random Forest (%)"
-            )
-            # Agrupar por equipo tomando su última observación evaluada
-            df_latest_by_eq = (
-                df_preds_final.sort_values(by="Fecha_Observacion")
-                .groupby("Identificador_Equipo")
-                .last()
-                .reset_index()
-            )
-            criticos = int((df_latest_by_eq[prob_col] >= 60).sum())
-            observacion = int(((df_latest_by_eq[prob_col] >= 30) & (df_latest_by_eq[prob_col] < 60)).sum())
-            operativos = int((df_latest_by_eq[prob_col] < 30).sum())
+            if "Probabilidad_Falla_7_Dias" in df_preds_final.columns:
+                prob_series = df_preds_final["Probabilidad_Falla_7_Dias"]
+            elif "Probabilidad_Falla_7_Dias_Pct" in df_preds_final.columns:
+                prob_series = df_preds_final["Probabilidad_Falla_7_Dias_Pct"] / 100.0
+            elif "Prob_Falla_Random Forest (%)" in df_preds_final.columns:
+                prob_series = df_preds_final["Prob_Falla_Random Forest (%)"] / 100.0
+            else:
+                prob_series = df_preds_final.iloc[:, 0]
+
+            total_obs = len(df_preds_final)
+            criticos = int((prob_series >= 0.60).sum())
+            observacion = int(((prob_series >= 0.30) & (prob_series < 0.60)).sum())
+            operativos = int((prob_series < 0.30).sum())
         else:
-            operativos, observacion, criticos = 0, 0, 0
+            total_obs, operativos, observacion, criticos = 0, 0, 0, 0
 
         render_kpi_cards(
             total_equipos=total_equipos,
             equipos_bajo=operativos,
             equipos_medio=observacion,
             equipos_alto=criticos,
+            total_observaciones=total_obs,
         )
 
         st.markdown("<br>", unsafe_allow_html=True)
