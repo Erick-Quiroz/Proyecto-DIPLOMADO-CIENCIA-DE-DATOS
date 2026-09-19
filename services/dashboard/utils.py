@@ -118,6 +118,59 @@ def load_evaluation_summary(results_dir: Path) -> Dict[str, pd.DataFrame]:
     }
 
 
+@st.cache_data(show_spinner=False)
+def load_temporal_partition_summary(base_dir: Path, df_full: Optional[pd.DataFrame] = None) -> pd.DataFrame:
+    """Carga o calcula dinámicamente el resumen de particiones temporales (Entrenamiento, Validación, Prueba)."""
+    # 1. Intentar cargar desde tablas_preparacion o reports
+    table_paths = [
+        base_dir / "tablas_preparacion" / "resumen_particion_temporal.csv",
+        base_dir / "reports" / "tables" / "preparacion" / "resumen_particion_temporal.csv",
+    ]
+    for p in table_paths:
+        if p.exists():
+            try:
+                df_res = pd.read_csv(p, encoding="utf-8-sig")
+                if not df_res.empty and "Conjunto" in df_res.columns:
+                    return df_res
+            except Exception:
+                pass
+
+    # 2. Si no existe o se provee df_full, calcularlo dinámicamente
+    if df_full is not None and not df_full.empty:
+        date_col = "Fecha_Observacion" if "Fecha_Observacion" in df_full.columns else "Fecha"
+        split_col = "Conjunto_Temporal" if "Conjunto_Temporal" in df_full.columns else "Particion"
+        target_col = "Falla_En_Los_Siguientes_Siete_Dias" if "Falla_En_Los_Siguientes_Siete_Dias" in df_full.columns else "Falla_Real"
+
+        if split_col in df_full.columns and date_col in df_full.columns:
+            df_work = df_full.copy()
+            df_work[date_col] = pd.to_datetime(df_work[date_col])
+            records = []
+            order = ["Entrenamiento", "Validación", "Prueba"]
+            for conj in order:
+                prefix = conj[:4]
+                mask = df_work[split_col].astype(str).str.startswith(prefix)
+                df_sub = df_work[mask]
+                if not df_sub.empty:
+                    f0 = int((df_sub[target_col] == 0).sum()) if target_col in df_sub.columns else 0
+                    f1 = int((df_sub[target_col] == 1).sum()) if target_col in df_sub.columns else 0
+                    tot = len(df_sub)
+                    tasa = round((f1 / tot) * 100, 2) if tot > 0 else 0.0
+                    records.append({
+                        "Conjunto": conj,
+                        "Fecha_Inicio": str(df_sub[date_col].min().date()),
+                        "Fecha_Fin": str(df_sub[date_col].max().date()),
+                        "Total_Registros": tot,
+                        "Fallas_0": f0,
+                        "Fallas_1": f1,
+                        "Tasa_Falla_Pct": tasa,
+                    })
+            if records:
+                return pd.DataFrame(records)
+
+    return pd.DataFrame()
+
+
+
 # =====================================================================
 # HISTORIAL Y EXPERIMENTOS
 # =====================================================================

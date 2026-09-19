@@ -666,3 +666,131 @@ def plot_risk_distribution_pie(df_data: pd.DataFrame, config: DashboardConfig) -
         legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5),
     )
     return fig
+
+
+def plot_temporal_partition_timeline(df_summary: pd.DataFrame) -> go.Figure:
+    """Genera la figura interactiva de línea temporal cronológica con purga de 7 días (Cero Leakage)."""
+    if df_summary.empty:
+        return go.Figure()
+
+    df_plot = df_summary.copy()
+    df_plot["Fecha_Inicio_dt"] = pd.to_datetime(df_plot["Fecha_Inicio"])
+    df_plot["Fecha_Fin_dt"] = pd.to_datetime(df_plot["Fecha_Fin"])
+    df_plot["Rango_Texto"] = df_plot["Fecha_Inicio"] + " a " + df_plot["Fecha_Fin"]
+
+    color_map = {
+        "Entrenamiento": "#3B82F6",
+        "Validación": "#F59E0B",
+        "Validacion": "#F59E0B",
+        "Prueba": "#10B981",
+    }
+
+    # Crear timeline con Plotly Express
+    fig = px.timeline(
+        df_plot,
+        x_start="Fecha_Inicio_dt",
+        x_end="Fecha_Fin_dt",
+        y="Conjunto",
+        color="Conjunto",
+        color_discrete_map=color_map,
+        text="Rango_Texto",
+        custom_data=["Fecha_Inicio", "Fecha_Fin", "Total_Registros", "Tasa_Falla_Pct", "Fallas_0", "Fallas_1"],
+    )
+
+    fig.update_yaxes(
+        categoryorder="array",
+        categoryarray=["Entrenamiento", "Validación", "Prueba"],
+        title="",
+        tickfont=dict(size=12, family="Inter, sans-serif", weight="bold"),
+    )
+    fig.update_xaxes(
+        title="Línea Temporal de Observación",
+        showgrid=True,
+        gridcolor="rgba(148, 163, 184, 0.25)",
+        tickfont=dict(size=11),
+    )
+    fig.update_traces(
+        marker=dict(line=dict(width=1.5, color="#0F172A")),
+        opacity=0.90,
+        textposition="inside",
+        insidetextanchor="middle",
+        textfont=dict(color="#FFFFFF", size=11, family="Inter, sans-serif", weight="bold"),
+        hovertemplate=(
+            "<b>Conjunto:</b> %{y}<br>"
+            "<b>Período:</b> %{customdata[0]} a %{customdata[1]}<br>"
+            "<b>Total Registros:</b> %{customdata[2]:,d}<br>"
+            "<b>Tasa de Falla:</b> %{customdata[3]}%<br>"
+            "<b>Sin Falla (0):</b> %{customdata[4]:,d} | <b>Falla 7D (1):</b> %{customdata[5]:,d}"
+            "<extra></extra>"
+        ),
+    )
+    fig.update_layout(
+        title=dict(
+            text="<b>Esquema de Partición Temporal Cronológica con Purga de 7 Días (Cero Leakage)</b>",
+            font=dict(size=14, family="Inter, sans-serif"),
+        ),
+        height=300,
+        margin=dict(l=20, r=20, t=55, b=35),
+        showlegend=False,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+    )
+    return fig
+
+
+def render_temporal_partition_section(df_summary: pd.DataFrame):
+    """Renderiza la sección completa del esquema de partición temporal en el Panel General."""
+    if df_summary.empty:
+        st.info("No se dispone de información de partición temporal.")
+        return
+
+    st.markdown("---")
+    st.markdown(
+        """
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div>
+                <h3 style="margin: 0; font-size: 1.35rem; font-weight: 700;">Esquema de Partición Temporal Cronológica</h3>
+                <p style="margin: 4px 0 0 0; color: #64748B; font-size: 0.90rem;">
+                    Estrategia de división temporal estricta con purga de seguridad de 7 días para evitar fuga de información (<i>Zero Data Leakage</i>).
+                </p>
+            </div>
+            <div style="background: rgba(37, 99, 235, 0.1); border: 1px solid #3B82F6; color: #1D4ED8; padding: 4px 12px; border-radius: 20px; font-size: 0.80rem; font-weight: 700;">
+                Purga de 7 Días Activa
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # 1. Gráfico interactivo idéntico a la figura particion_cronologica.png
+    fig_timeline = plot_temporal_partition_timeline(df_summary)
+    st.plotly_chart(fig_timeline, use_container_width=True)
+
+    # 2. Tabla resumen con métricas clave
+    total_dataset = df_summary["Total_Registros"].sum()
+    df_table = df_summary.copy()
+    if total_dataset > 0:
+        df_table["Distribución (%)"] = ((df_table["Total_Registros"] / total_dataset) * 100).round(1).astype(str) + " %"
+
+    df_table["Tasa Falla (%)"] = df_table["Tasa_Falla_Pct"].astype(str) + " %"
+    df_table["Período de Observación"] = df_table["Fecha_Inicio"] + "  ➔  " + df_table["Fecha_Fin"]
+    df_table["Sin Falla (0)"] = df_table["Fallas_0"].apply(lambda x: f"{int(x):,d}")
+    df_table["Falla 7D (1)"] = df_table["Fallas_1"].apply(lambda x: f"{int(x):,d}")
+    df_table["Total Muestras"] = df_table["Total_Registros"].apply(lambda x: f"{int(x):,d}")
+
+    cols_display = [
+        "Conjunto",
+        "Período de Observación",
+        "Total Muestras",
+        "Distribución (%)",
+        "Sin Falla (0)",
+        "Falla 7D (1)",
+        "Tasa Falla (%)",
+    ]
+
+    st.dataframe(
+        df_table[[c for c in cols_display if c in df_table.columns]],
+        use_container_width=True,
+        hide_index=True,
+    )
+

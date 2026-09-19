@@ -15,6 +15,7 @@ from services.dashboard.utils import (
     load_dataset_modelado,
     load_split_datasets,
     load_evaluation_summary,
+    load_temporal_partition_summary,
     load_prediction_history,
     check_api_health,
 )
@@ -23,6 +24,7 @@ from services.dashboard.components import (
     render_kpi_cards,
     plot_probability_by_equipment,
     plot_risk_distribution_pie,
+    render_temporal_partition_section,
 )
 from services.dashboard.prediction import render_prediction_page
 from services.dashboard.model_lab import render_model_lab_page
@@ -51,6 +53,7 @@ def main():
     df_full = load_dataset_modelado(config.processed_data_dir)
     eval_summary = load_evaluation_summary(config.results_dir)
     df_preds_final = eval_summary["predicciones_finales"]
+    df_partition = load_temporal_partition_summary(config.base_dir, df_full=df_full)
 
     try:
         X_train, _, _, _, _, _ = load_split_datasets(config.processed_data_dir)
@@ -187,6 +190,9 @@ def main():
                 st.plotly_chart(fig_pie, use_container_width=True)
             else:
                 st.info("No hay datos de distribución de riesgo disponibles.")
+
+        # Sección del Esquema de Partición Temporal Cronológica (Dinámica con purga 7D)
+        render_temporal_partition_section(df_partition)
 
         # Tabla Completa de Predicciones con Filtros Interactivos
         st.markdown("---")
