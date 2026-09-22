@@ -1,5 +1,5 @@
 outs:
-- md5: cc1c35e484f880f561d7dd332a11de84
-  size: 2298905
+- md5: a2fe15d91c8fd13ca4101234c98271c7
+  size: 2335033
   hash: md5
   path: modelo_random_forest.joblib

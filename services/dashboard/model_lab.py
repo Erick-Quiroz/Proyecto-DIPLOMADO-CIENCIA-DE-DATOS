@@ -117,7 +117,7 @@ def render_model_lab_page(config: DashboardConfig):
             hyperparams["subsample"] = st.slider("Submuestra de Filas (subsample)", 0.5, 1.0, 0.8, 0.05)
             hyperparams["colsample_bytree"] = st.slider("Submuestra de Columnas (colsample_bytree)", 0.5, 1.0, 0.8, 0.05)
         with col_hp3:
-            hyperparams["min_child_weight"] = st.slider("Peso Mínimo en Nodo (min_child_weight)", 1, 10, 1, 1)
+            hyperparams["scale_pos_weight"] = st.slider("Balanceo de Clases (scale_pos_weight)", 1.0, 20.0, 8.38, 0.1)
             hyperparams["gamma"] = st.slider("Gamma (Reducción Mínima)", 0.0, 5.0, 0.0, 0.1)
             hyperparams["eval_metric"] = "logloss"
             hyperparams["random_state"] = 42

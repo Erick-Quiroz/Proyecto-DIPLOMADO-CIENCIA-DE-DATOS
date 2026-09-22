@@ -5,6 +5,6 @@ regresion_logistica,Regresión Logística,Test,2436,12.73,94.91,71.73,99.03,83.2
 random_forest,Random Forest,Train,12209,10.66,97.07,78.42,100.0,87.91,99.94
 random_forest,Random Forest,Valid,2465,11.72,95.21,71.76,97.58,82.7,99.1
 random_forest,Random Forest,Test,2436,12.73,95.16,72.64,99.35,83.92,99.18
-xgboost,XGBoost,Train,12209,10.66,99.54,97.77,97.92,97.85,99.98
-xgboost,XGBoost,Valid,2465,11.72,96.59,84.28,87.2,85.71,99.24
-xgboost,XGBoost,Test,2436,12.73,96.59,84.08,90.32,87.09,99.27
+xgboost,XGBoost,Train,12209,10.66,98.38,86.79,100.0,92.93,99.97
+xgboost,XGBoost,Valid,2465,11.72,95.82,75.41,95.5,84.27,99.25
+xgboost,XGBoost,Test,2436,12.73,96.22,77.95,98.06,86.86,99.23

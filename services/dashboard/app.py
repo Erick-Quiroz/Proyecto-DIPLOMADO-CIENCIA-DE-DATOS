@@ -272,44 +272,152 @@ def main():
     # ----------------------------------------------------
     elif menu_option == "Análisis de Modelos":
         st.markdown("<div class='main-header'>Análisis Comparativo y Desempeño de Modelos</div>", unsafe_allow_html=True)
-        st.markdown("<div class='sub-header'>Resultados formales de la evaluación de modelos sobre el conjunto de prueba independiente.</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sub-header'>Consulta las métricas formales en Validación (X_valid), Prueba (X_test) y Diagnóstico de Estabilidad.</div>", unsafe_allow_html=True)
 
-        st.subheader("Comparativa de Rendimiento en Conjunto de Prueba (X_test)")
-        df_comp = eval_summary["tabla_comparacion"]
-        if not df_comp.empty:
-            st.dataframe(
-                df_comp.style.format({
-                    "Accuracy": "{:.2%}",
-                    "Precision": "{:.2%}",
-                    "Recall": "{:.2%}",
-                    "F1-Score": "{:.2%}",
-                    "ROC-AUC": "{:.2%}",
-                }),
-                use_container_width=True,
-                hide_index=True,
-            )
+        tab_valid, tab_test, tab_stab, tab_plots, tab_detail = st.tabs([
+            "🧪 Validación (X_valid)",
+            "🎯 Prueba (X_test)",
+            "⚖️ Diagnóstico de Estabilidad (Train/Val/Test)",
+            "📊 Curvas ROC y Matrices",
+            "📋 Predicciones por Equipo (Test)",
+        ])
 
-        st.markdown("---")
-        st.subheader("Diagnóstico de Estabilidad y Control de Sobreajuste (Train / Valid / Test)")
-        df_stab = eval_summary["diagnostico_estabilidad"]
-        if not df_stab.empty:
-            st.dataframe(df_stab, use_container_width=True, hide_index=True)
-
-        st.markdown("---")
-        st.subheader("Comparativa Multi-Modelo por Fecha (Test Set)")
-        df_all_models = pd.read_csv(config.evaluation_results_dir / "predicciones_todos_modelos_test.csv", encoding="utf-8-sig")
-        if not df_all_models.empty:
-            st.dataframe(
-                df_all_models.head(20).rename(
+        # TAB 1: VALIDACIÓN (X_valid)
+        with tab_valid:
+            st.markdown("### 🧪 Evaluación en Conjunto de Validación (2,465 Registros | 289 Fallas)")
+            st.caption("Fase 7.4 CRISP-DM: Partición temporal utilizada para selección metodológica y calibración.")
+            
+            df_val = eval_summary.get("tabla_validacion", pd.DataFrame())
+            if not df_val.empty:
+                val_cols = ["modelo", "accuracy_pct", "precision_pct", "recall_pct", "f1_score_pct", "roc_auc_pct"]
+                available_cols = [c for c in val_cols if c in df_val.columns]
+                val_display = df_val[available_cols].rename(
                     columns={
-                        "Probabilidad_Falla_Regresión Logística (%)": "% Reg. Logística",
-                        "Probabilidad_Falla_Random Forest (%)": "% Random Forest",
-                        "Probabilidad_Falla_XGBoost (%)": "% XGBoost",
+                        "modelo": "Modelo",
+                        "accuracy_pct": "Accuracy (%)",
+                        "precision_pct": "Precision (%)",
+                        "recall_pct": "Recall (%)",
+                        "f1_score_pct": "F1-Score (%)",
+                        "roc_auc_pct": "ROC-AUC (%)",
                     }
-                ),
-                use_container_width=True,
-                hide_index=True,
-            )
+                )
+                st.dataframe(
+                    val_display.style.format({
+                        "Accuracy (%)": "{:.2f} %",
+                        "Precision (%)": "{:.2f} %",
+                        "Recall (%)": "{:.2f} %",
+                        "F1-Score (%)": "{:.2f} %",
+                        "ROC-AUC (%)": "{:.2f} %",
+                    }),
+                    use_container_width=True,
+                    hide_index=True,
+                )
+            else:
+                st.info("No se encontró la tabla de validación.")
+
+            kpi1, kpi2, kpi3 = st.columns(3)
+            with kpi1:
+                st.metric("Recall en Validación", "97.58 %", "Random Forest / Reg. Logística")
+            with kpi2:
+                st.metric("F1-Score en Validación", "84.27 %", "XGBoost")
+            with kpi3:
+                st.metric("ROC-AUC en Validación", "99.25 %", "XGBoost")
+
+        # TAB 2: PRUEBA (X_test)
+        with tab_test:
+            st.markdown("### 🎯 Evaluación en Conjunto de Prueba Independiente (2,436 Registros | 310 Fallas)")
+            st.caption("Fase 7.5 CRISP-DM: Evaluación final sobre el horizonte futuro independiente.")
+
+            df_comp = eval_summary["tabla_comparacion"]
+            if not df_comp.empty:
+                st.dataframe(
+                    df_comp.style.format({
+                        "Accuracy": "{:.2%}",
+                        "Precision": "{:.2%}",
+                        "Recall": "{:.2%}",
+                        "F1-Score": "{:.2%}",
+                        "ROC-AUC": "{:.2%}",
+                    }),
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+            kpi1, kpi2, kpi3 = st.columns(3)
+            with kpi1:
+                st.metric("Recall en Prueba", "99.35 %", "Random Forest (2 FN)")
+            with kpi2:
+                st.metric("F1-Score en Prueba", "86.86 %", "XGBoost")
+            with kpi3:
+                st.metric("ROC-AUC en Prueba", "99.29 %", "Regresión Logística")
+
+        # TAB 3: ESTABILIDAD
+        with tab_stab:
+            st.markdown("### ⚖️ Diagnóstico de Estabilidad y Control de Sobreajuste (Train / Valid / Test)")
+            st.caption("Comparativa cruzada entre particiones cronológicas para validar generalización.")
+            df_stab = eval_summary["diagnostico_estabilidad"]
+            if not df_stab.empty:
+                st.dataframe(
+                    df_stab.rename(
+                        columns={
+                            "id_modelo": "ID",
+                            "modelo": "Modelo",
+                            "particion": "Partición",
+                            "n_registros": "N° Filas",
+                            "tasa_positiva_pct": "Tasa Fallas (%)",
+                            "accuracy_pct": "Accuracy (%)",
+                            "precision_pct": "Precision (%)",
+                            "recall_pct": "Recall (%)",
+                            "f1_score_pct": "F1-Score (%)",
+                            "roc_auc_pct": "ROC-AUC (%)",
+                        }
+                    ),
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+        # TAB 4: GRÁFICOS
+        with tab_plots:
+            st.markdown("### 📊 Curvas ROC y Comparativa Visual de Modelos")
+            col_roc, col_bar = st.columns(2)
+            roc_path = config.evaluation_results_dir / "curvas_roc" / "curvas_roc_comparativas.png"
+            table_img_path = config.evaluation_results_dir / "tabla_comparacion_modelos.png"
+
+            with col_roc:
+                if roc_path.exists():
+                    st.image(str(roc_path), caption="Curvas ROC Comparativas (Test)", use_container_width=True)
+            with col_bar:
+                if table_img_path.exists():
+                    st.image(str(table_img_path), caption="Comparativa Gráfica de Rendimiento", use_container_width=True)
+
+            st.markdown("#### Matrices de Confusión Individuales (Conjunto de Prueba)")
+            cm_cols = st.columns(3)
+            cm_models = [
+                ("random_forest", "Random Forest", cm_cols[0]),
+                ("xgboost", "XGBoost", cm_cols[1]),
+                ("regresion_logistica", "Regresión Logística", cm_cols[2]),
+            ]
+            for key, name, col in cm_models:
+                cm_path = config.evaluation_results_dir / "matrices_confusion" / f"matriz_confusion_{key}.png"
+                with col:
+                    if cm_path.exists():
+                        st.image(str(cm_path), caption=f"Matriz: {name}", use_container_width=True)
+
+        # TAB 5: PREDICCIONES MULTI-MODELO
+        with tab_detail:
+            st.markdown("### 📋 Predicciones Multi-Modelo por Equipo (Test Set)")
+            df_all_models = pd.read_csv(config.evaluation_results_dir / "predicciones_todos_modelos_test.csv", encoding="utf-8-sig")
+            if not df_all_models.empty:
+                st.dataframe(
+                    df_all_models.rename(
+                        columns={
+                            "Probabilidad_Falla_Regresión Logística (%)": "% Reg. Logística",
+                            "Probabilidad_Falla_Random Forest (%)": "% Random Forest",
+                            "Probabilidad_Falla_XGBoost (%)": "% XGBoost",
+                        }
+                    ),
+                    use_container_width=True,
+                    hide_index=True,
+                )
 
     # ----------------------------------------------------
     # SECCIÓN 5: HISTORIAL OPERATIVO

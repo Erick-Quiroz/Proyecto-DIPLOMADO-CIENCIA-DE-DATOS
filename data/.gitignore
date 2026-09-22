@@ -2,3 +2,4 @@
 !/raw/.gitkeep
 /processed/*
 !/processed/.gitkeep
+/processed

@@ -110,11 +110,22 @@ def load_evaluation_summary(results_dir: Path) -> Dict[str, pd.DataFrame]:
     preds_final_path = eval_dir / "predicciones_modelo_final.csv"
     stability_path = eval_dir / "diagnostico_estabilidad.csv"
 
+    df_comp = pd.read_csv(comp_path, encoding="utf-8-sig") if comp_path.exists() else pd.DataFrame()
+    df_metrics = pd.read_csv(metrics_path, encoding="utf-8-sig") if metrics_path.exists() else pd.DataFrame()
+    df_preds_final = pd.read_csv(preds_final_path, encoding="utf-8-sig") if preds_final_path.exists() else pd.DataFrame()
+    df_stability = pd.read_csv(stability_path, encoding="utf-8-sig") if stability_path.exists() else pd.DataFrame()
+
+    df_val = pd.DataFrame()
+    if not df_stability.empty and "particion" in df_stability.columns:
+        val_mask = df_stability["particion"].isin(["Valid", "Validacion", "Validación"])
+        df_val = df_stability[val_mask].copy().reset_index(drop=True)
+
     return {
-        "tabla_comparacion": pd.read_csv(comp_path, encoding="utf-8-sig") if comp_path.exists() else pd.DataFrame(),
-        "metricas_modelos": pd.read_csv(metrics_path, encoding="utf-8-sig") if metrics_path.exists() else pd.DataFrame(),
-        "predicciones_finales": pd.read_csv(preds_final_path, encoding="utf-8-sig") if preds_final_path.exists() else pd.DataFrame(),
-        "diagnostico_estabilidad": pd.read_csv(stability_path, encoding="utf-8-sig") if stability_path.exists() else pd.DataFrame(),
+        "tabla_comparacion": df_comp,
+        "tabla_validacion": df_val,
+        "metricas_modelos": df_metrics,
+        "predicciones_finales": df_preds_final,
+        "diagnostico_estabilidad": df_stability,
     }
 
 

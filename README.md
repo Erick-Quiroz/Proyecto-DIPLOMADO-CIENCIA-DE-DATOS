@@ -1,357 +1,194 @@
-# Proyecto Final: Predicción de Fallas en Equipos Industriales (Área de Helados)
+# Prediccion de Fallas en Equipos Industriales - Area de Helados
 
-## 📌 Descripción del Proyecto
-
-Este repositorio contiene la solución técnica integral para el proyecto de Ciencia de Datos y Machine Learning:
-
-> **Título:** *“Sistema Predictivo para la Estimación de la Probabilidad de Falla en Equipos Industriales del Área de Helados mediante Técnicas de Machine Learning”*  
-> **Problema:** *“¿Cómo estimar la probabilidad de falla de los equipos industriales del Área de Helados durante los siguientes siete días, a partir del análisis de sus variables de operación y registros históricos de fallas, mediante técnicas de Ciencia de Datos?”*
-
-El sistema está diseñado bajo una **arquitectura desacoplada y profesional de microservicios MLOps**, garantizando reproducibilidad estricta, prevención total de fuga de información (*Data Leakage*) y partición temporal cronológica.
-
-
-### 1. Configurar el Entorno Virtual (`.venv`)
-```bash
-# Crear y aprovisionar el entorno unificado automáticamente
-python scripts/setup_environment.py --mode unified
-```
-
-### 2. Activar el Entorno Virtual
-
-- **En Windows (PowerShell):**
-  ```powershell
-  .venv\Scripts\Activate.ps1
-  ```
-- **En Windows (CMD):**
-  ```cmd
-  .venv\Scripts\activate.bat
-  ```
-- **En Linux / macOS:**
-  ```bash
-  source .venv/bin/activate
-  ```
+Sistema de Machine Learning para estimar la probabilidad de falla en equipos criticos durante los siguientes 7 dias, a partir de variables operativas, telemetria y registros historicos.
 
 ---
 
-##  Comandos de Ejecución y Salidas
+## Arquitectura del Sistema
 
-| Flujo / Servicio | Comando | Salidas Principales |
-| :--- | :--- | :--- |
-| **Pipeline Completo (Fase 7.3)** | `python main_preparacion.py` | `data/processed/dataset_modelado.csv`<br>`data/processed/X_train.csv`, `y_train.csv`<br>`data/processed/X_valid.csv`, `y_valid.csv`<br>`data/processed/X_test.csv`, `y_test.csv` |
-| **Limpieza de Datos (`data_cleaning`)** | `python -m services.data_cleaning.main` | `data/processed/observaciones_limpias.csv`<br>`tablas_preparacion/auditoria_*.csv`<br>`tablas_preparacion/matriz_data_leakage.csv` |
-| **Ingeniería de Características (`feature_engineering`)** | `python -m services.feature_engineering.main` | Matrices `X_` / `y_` para Train, Valid y Test<br>`tablas_preparacion/resumen_*.csv`<br>`figuras_preparacion/*.png` |
-| **Análisis Exploratorio (`eda`)** | `python -m services.eda.main` | `reports/figures/eda/*.png`<br>`reports/tables/eda/*.csv` |
+El proyecto esta construido bajo una arquitectura modular desacoplada basada en servicios (MLOps), separando las etapas de preparacion de datos, entrenamiento, evaluacion y servicio en produccion.
+
+```
++-------------------------------------------------------------------------+
+|                           PIPELINE DE DATOS                             |
+|                                                                         |
+|  [data/raw] ---> [data_cleaning] ---> [feature_engineering]             |
+|                       |                         |                       |
+|                       v                         v                       |
+|               Observaciones Limpias      Matrices X/y (Train, Val, Test)|
+|                                          con Purga Temporal 7D          |
++-------------------------------------------------------------------------+
+                                    |
+                                    v
++-------------------------------------------------------------------------+
+|                         ENTRENAMIENTO Y EVALUACION                      |
+|                                                                         |
+|  [modeling]       -> Regresion Logistica, Random Forest, XGBoost        |
+|  [evaluation]     -> Validacion en Test, ROC-AUC, F1-Score, Curvas ROC  |
+|  [models/]        -> Serializacion del modelo seleccionado (.joblib)    |
++-------------------------------------------------------------------------+
+                                    |
+                                    v
++-------------------------------------------------------------------------+
+|                        DESPLIEGUE Y SERVICIO                            |
+|                                                                         |
+|  [services/api]       (FastAPI - Puerto 8502) -> Inferencia REST        |
+|  [services/dashboard] (Streamlit - Puerto 8501) -> UI y Monitoreo       |
++-------------------------------------------------------------------------+
+```
+
+### Flujo Metodologico de Datos
+1. **Limpieza y Auditoria (`services/data_cleaning`):** Validacion de tipos, tratamiento de atipicos y descarte de variables con fuga de informacion (*data leakage*).
+2. **Ingenieria de Caracteristicas (`services/feature_engineering`):** Generacion de medias moviles 7D, desviaciones, ratios operativos y particion cronologica estricta con ventanas de purga de 7 dias para evitar *lookahead bias*.
+3. **Modelado y Evaluacion (`services/modeling`, `services/evaluation`):** Comparacion de modelos candidatos frente al baseline, seleccion del modelo optimo y diagnostico de estabilidad.
+4. **Servicio e Inferencia (`services/api`, `services/dashboard`):** Exposicion de endpoints para inferencia en tiempo real y panel visual para operadores.
 
 ---
 
-##  Metodología y Preparación de Datos (Fase 7.3)
+## Herramientas y Tecnologias
 
-```
-[Datos Crudos: observaciones_diarias] (17,719 filas)
-                  │
-                  ▼
-[Auditoría y Filtro de Horizonte] ──► Exclusión de 203 filas sin ventana 7D (Total: 17,516 filas)
-                  │
-                  ▼
-[Ingeniería Temporal] ──────────────► Medias 7D, Std 7D, Deltas 1D y Ratios de Esfuerzo (sin lookahead)
-                  │
-                  ▼
-[Codificación Categórica] ──────────► One-Hot y Ordinal ajustados estrictamente en TRAIN
-                  │
-                  ▼
-[Partición Cronológica con Purga 7D]
-   ├── Entrenamiento (Train) : 12,209 registros (69.70%) | 1,301 fallas (10.66%) [2025-01-01 a 2026-02-25]
-   ├── Purga Train → Valid   :    203 registros ( 1.16%) [2026-02-26 a 2026-03-04] (Ventana 7D excluida de Train/Valid)
-   ├── Validación (Valid)    :  2,465 registros (14.07%) |   289 fallas (11.72%) [2026-03-05 a 2026-05-28]
-   ├── Purga Valid → Test    :    203 registros ( 1.16%) [2026-05-29 a 2026-06-04] (Ventana 7D excluida de Valid/Test)
-   └── Prueba (Test)         :  2,436 registros (13.91%) |   310 fallas (12.73%) [2026-06-05 a 2026-08-27]
-```
-
-### 7.3.6 Partición temporal de los datos
-- **Detección de Temporal Leakage:** Inicialmente se identificó un problema de fuga de información temporal (*temporal leakage*) derivado de la propia definición de la variable objetivo (`Falla_En_Los_Siguientes_Siete_Dias`), la cual evalúa un horizonte futuro de siete días $[T+1, T+7]$ a partir de cada fecha de observación $T$.
-- **Insuficiencia de la división simple por fecha:** Una partición temporal simple basada únicamente en la fecha de observación no resultaba metodológicamente suficiente, dado que las etiquetas de las observaciones finales de cada conjunto (por ejemplo, del 2026-03-04 en Train) dependían directamente de fallas y eventos ocurridos entre el 2026-03-05 y el 2026-03-11, pertenecientes temporalmente al período de Validación. De forma análoga, las observaciones finales de Validación dependían de eventos en el período de Prueba.
-- **Implementación de Ventana de Purga (7 Días):** Para garantizar que el horizonte máximo del target de cada partición sea estrictamente anterior al inicio del siguiente conjunto ($\max(\text{Target}_k) < \min(\text{Observación}_{k+1})$), se aplicaron dos ventanas de purga de siete días:
-  1. *Purga Train $\to$ Validation (2026-02-26 a 2026-03-04, 203 filas):* Asegura que el target máximo de Train (2026-03-04) no invada el inicio de Validación (2026-03-05). Condición: **PASS**.
-  2. *Purga Validation $\to$ Test (2026-05-29 a 2026-06-04, 203 filas):* Asegura que el target máximo de Validación (2026-06-04) no invada el inicio de Prueba (2026-06-05). Condición: **PASS**.
-- **Preservación en Dataset Consolidado:** Las 406 observaciones purgadas se excluyen de las matrices de entrenamiento y validación ($X/y$), pero se preservan intactas en `dataset_modelado.csv` con la etiqueta metodológica `Conjunto_Temporal = "Purga"`.
-
-### Prevención de Data Leakage
-- **Variables descartadas como predictores:** `Identificador_Equipo`, `Codigo_Equipo_Origen`, `Nombre_Equipo` (evitan memorización y sobreajuste).
-- **Información post-evento descartada:** Variables de costos, causas y paradas de `hechos_fallas.csv`.
-- **Ajuste de transformadores:** Todos los codificadores y escaladores se ajustan exclusivamente sobre el conjunto de Entrenamiento.
+- **Lenguaje Base:** Python 3.12+
+- **Procesamiento y Analisis:** Pandas, NumPy
+- **Machine Learning:** Scikit-Learn, XGBoost, Joblib
+- **Visualizacion y Reportes:** Matplotlib, Seaborn, Plotly
+- **Backend API:** FastAPI, Uvicorn, Pydantic
+- **Frontend / Dashboard:** Streamlit
+- **Versionamiento de Datos y Modelos:** DVC (Data Version Control) con almacenamiento remoto S3 / MinIO
+- **Contenedores e Infraestructura:** Docker, Docker Compose
+- **Control de Versiones:** Git
 
 ---
 
-## Estructura del Proyecto
+## Estructura del Repositorio
 
 ```text
-Proyecto-DIPLOMADO-CIENCIA-DE-DATOS/
-├── .venv/                      # Entorno virtual aislado (ignorado en git)
-├── data/                       # Almacenamiento organizado de datos (ignorado en git)
-│   ├── raw/                    # Datos fuentes originales e inmutables
-│   ├── interim/                # Datos intermedios transformados
-│   └── processed/              # Datasets finales listos para modelado (X_train, y_train, etc.)
-├── services/                   # Microservicios modulares desacoplados (MLOps)
-│   ├── data_cleaning/          # Validación, auditoría de atípicos/nulos y filtro de horizonte
-│   ├── feature_engineering/    # Cálculo de features temporales, codificación y partición cronológica
-│   ├── training/               # Entrenamiento y evaluación de algoritmos de Machine Learning
-│   ├── eda/                    # Análisis exploratorio automatizado de datos
-│   ├── serving/                # Inferencia y API REST para predicción en producción
-│   └── monitoring/             # Monitoreo de deriva de datos (Data Drift) y métricas
-├── tablas_preparacion/         # Tablas CSV de evidencia de la Fase 7.3
-├── figuras_preparacion/        # Gráficos PNG de control temporal y distribución de clases
-├── notebooks/                  # Cuadernos Jupyter para experimentación y EDA interactivo
-├── reports/                    # Reportes ejecutivos, figuras y tablas de análisis
-├── scripts/                    # Scripts de soporte y gestión de entornos virtuales
-├── src/                        # Código base modular empaquetado (pip install -e .)
-├── models/                     # Modelos serializados entrenados (.pkl, .joblib)
-├── docs/                       # Documentación técnica
-└── references/                 # Diccionarios de datos y manuales de planta
+.
+├── data/
+│   ├── raw/                 # Datos fuente originales
+│   ├── interim/             # Datos intermedios transformados
+│   └── processed/           # Datasets particionados finales (X_train, y_train, etc.)
+├── docker/
+│   ├── api/                 # Dockerfile y configuracion del backend
+│   └── dashboard/           # Dockerfile y configuracion del frontend
+├── models/                  # Modelos serializados (.joblib)
+├── notebooks/               # Cuadernos de experimentacion y analisis exploratorio
+├── reports/                 # Figuras, curvas ROC y reportes tecnicos generados
+├── results/                 # Tablas de evaluacion y diagnosticos
+├── scripts/                 # Scripts de configuracion, evaluacion y soporte
+├── services/
+│   ├── api/                 # Microservicio de inferencia (FastAPI)
+│   ├── dashboard/           # Interfaz web interactiva (Streamlit)
+│   ├── data_cleaning/       # Modulo de limpieza y validacion
+│   ├── eda/                 # Modulo de analisis exploratorio
+│   ├── evaluation/          # Modulo de evaluacion y comparacion
+│   ├── feature_engineering/ # Modulo de transformaciones y particion temporal
+│   └── modeling/            # Modulo de definicion y entrenamiento de modelos
+├── docker-compose.yml       # Orquestacion de contenedores para despliegue
+├── main_preparacion.py      # Pipeline completo de preparacion de datos
+├── main_modelado.py         # Pipeline de entrenamiento de modelos
+├── main_evaluacion.py       # Pipeline de evaluacion y seleccion
+└── requirements.txt         # Dependencias principales del proyecto
 ```
 
 ---
 
----
+## Estructura de Despliegue
 
-## Fase 7.6: Despliegue (FastAPI + Streamlit)
+El despliegue se organiza en dos servicios independientes comunicados por red interna HTTP:
 
-El sistema cuenta con una arquitectura de despliegue desacoplada lista para producción:
+1. **Microservicio de Inferencia (API REST):**
+   - Construido con FastAPI.
+   - Expone endpoints para verificacion de estado, consulta de metadatos y prediccion de probabilidad de falla con validacion de esquema.
+   - Puerto por defecto: `8502`.
+
+2. **Microservicio de Visualizacion (Dashboard):**
+   - Construido con Streamlit.
+   - Consume la API REST para mostrar el diagnostico de riesgo, telemetria del equipo y distribucion de alertas.
+   - Puerto por defecto: `8501`.
 
 ```
-                    USUARIO (Operador / Data Scientist)
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ STREAMLIT (Port 8501)│  → Frontend Web
-                         │ - Inicio             │
-                         │ - Predicción en vivo │
-                         │ - Historial          │
-                         │ - Análisis           │
-                         │ - Laboratorio        │
-                         └──────────┬───────────┘
-                                    │  HTTP / JSON
-                                    ▼
-                         ┌──────────────────────┐
-                         │  FASTAPI (Port 8502) │  → Backend API REST
-                         │  /health             │
-                         │  /models             │
-                         │  /predict            │
-                         │  /models/set-active  │
-                         └──────────┬───────────┘
-                                    │  predict_proba()
-                                    ▼
-                         ┌──────────────────────┐
-                         │   MODELO ML ACTIVO   │  → Random Forest (7.5)
-                         │   (o Laboratorio)    │
-                         └──────────────────────┘
+                    +--------------------+
+                    |  Usuario / Planta  |
+                    +---------+----------+
+                              |
+                              | HTTP (Puerto 8501)
+                              v
+                    +--------------------+
+                    |     Dashboard      |
+                    |    (Streamlit)     |
+                    +---------+----------+
+                              |
+                              | HTTP (Puerto 8502)
+                              v
+                    +--------------------+
+                    |    API Inferencia  |
+                    |     (FastAPI)      |
+                    +---------+----------+
+                              |
+                              | Carga en memoria
+                              v
+                    +--------------------+
+                    |   Modelo Activo    |
+                    |  (Random Forest)   |
+                    +--------------------+
 ```
-
-### Ejecución del Sistema
-
-Para levantar el sistema completo se ejecutan dos procesos concurrentes:
-
-```bash
-# Terminal 1: Iniciar Backend API REST (FastAPI)
-uvicorn services.api.main:app --reload --port 8502
-
-# Terminal 2: Iniciar Frontend Web (Streamlit)
-streamlit run services/dashboard/app.py
-```
-
-* **Frontend Streamlit:** [http://localhost:8501](http://localhost:8501)
-* **Backend API REST:** [http://127.0.0.1:8502](http://127.0.0.1:8502)
-* **Documentación Interactiva (Swagger UI):** [http://127.0.0.1:8502/docs](http://127.0.0.1:8502/docs)
-
-### Endpoints Principales de la API
-
-| Método | Endpoint | Descripción |
-| :--- | :--- | :--- |
-| `GET` | `/health` | Comprobación de salud del servicio y modelo activo |
-| `GET` | `/models` | Lista de modelos serializados (producción y laboratorio) |
-| `GET` | `/models/active` | Consulta el modelo actualmente activo |
-| `POST` | `/predict` | Inferencia de probabilidad continua en 7 días y nivel de riesgo con validación de 44 variables |
-| `POST` | `/models/set-active` | Promueve dinámicamente un modelo nuevo al servicio de producción |
 
 ---
 
-## Despliegue e Infraestructura MLOps (Docker, MinIO, DVC, FastAPI, Streamlit)
+## Instrucciones de Ejecucion
 
-El sistema implementa una arquitectura reproducible y modular de microservicios contenerizados y versionamiento de datos/modelos:
+### Opcion 1: Despliegue con Docker Compose (Recomendado)
 
-```
-                    ┌───────────────────────────┐
-                    │     USUARIO / OPERARIO    │
-                    └─────────────┬─────────────┘
-                                  │ HTTP (:8501)
-                                  ▼
-                    ┌───────────────────────────┐
-                    │    STREAMLIT DASHBOARD    │
-                    │   (docker/dashboard)      │
-                    └─────────────┬─────────────┘
-                                  │ HTTP (:8502) [API_URL=http://api:8502]
-                                  ▼
-                    ┌───────────────────────────┐
-                    │     FASTAPI INFERENCE     │
-                    │       (docker/api)        │
-                    └─────────────┬─────────────┘
-                                  │ predict_proba()
-                                  ▼
-                    ┌───────────────────────────┐
-                    │    RANDOM FOREST MODEL    │
-                    │ modelo_random_forest.joblib│
-                    └───────────────────────────┘
-
-        VERSIONAMIENTO Y ALMACENAMIENTO DE DATOS Y MODELOS
-
-                    ┌───────────────────────────┐
-                    │            GIT            │
-                    │ (Metadatos, código, .dvc) │
-                    └─────────────┬─────────────┘
-                                  │
-                                  ▼
-                    ┌───────────────────────────┐
-                    │            DVC            │
-                    │  (data.dvc, models.dvc)   │
-                    └─────────────┬─────────────┘
-                                  │ Protocolo S3
-                                  ▼
-                    ┌───────────────────────────┐
-                    │       MINIO STORAGE       │
-                    │       (minio:9000)        │
-                    │    Bucket: diplomado      │
-                    └───────────────────────────┘
-```
-
-### 1. Requisitos Previos
-
-- **Git** >= 2.30
-- **Python** 3.12+ (con gestor `pip` y entorno virtual)
-- **Docker** >= 24.0 y **Docker Compose** >= 2.20
-- **DVC con soporte S3** (`dvc[s3]`)
-
-### 2. Instalación de DVC con Soporte S3
-
-Para gestionar el versionamiento de datos y modelos vinculados a MinIO S3:
+Construir las imagenes y levantar los contenedores:
 
 ```bash
-python -m pip install "dvc[s3]"
-dvc --version
+docker compose up --build -d
 ```
 
-### 3. Configuración del Archivo de Variables de Entorno (`.env`)
-
-Copia la plantilla de configuración `.env.example` para crear tu archivo local `.env`:
+Verificar el estado de los servicios:
 
 ```bash
-cp .env.example .env
-```
-
-Configura los valores correspondientes en `.env` (las credenciales nunca se suben a Git ni se escriben en Dockerfiles):
-
-```env
-# MinIO S3 Storage
-MINIO_ROOT_USER=admin_helados
-MINIO_ROOT_PASSWORD=<TU_CONTRASENA_SEGURA>
-MINIO_BUCKET=diplomado
-MINIO_ENDPOINT=http://diplomado-minio-45370e-147-93-118-204.traefik.me
-MINIO_CONSOLE_URL=http://diplomado-minio-9804d4-147-93-118-204.traefik.me
-MINIO_API_PORT=9000
-MINIO_CONSOLE_PORT=9001
-
-# DVC S3 Credentials
-AWS_ACCESS_KEY_ID=<TU_ACCESS_KEY>
-AWS_SECRET_ACCESS_KEY=<TU_SECRET_KEY>
-AWS_DEFAULT_REGION=us-east-1
-DVC_S3_ENDPOINT=http://diplomado-minio-45370e-147-93-118-204.traefik.me
-
-# Backend FastAPI
-API_HOST=0.0.0.0
-API_PORT=8502
-PROJECT_ROOT=.
-
-# Frontend Streamlit
-STREAMLIT_HOST=0.0.0.0
-STREAMLIT_PORT=8501
-API_URL=http://api:8502
-API_BASE_URL=http://api:8502
-```
-
-### 4. Configuración y Operaciones con DVC y MinIO
-
-```bash
-# 1. Inicializar DVC (si se clona por primera vez)
-dvc init
-
-# 2. Configurar remote S3 apuntando a MinIO
-dvc remote add -d minio s3://diplomado
-dvc remote modify minio endpointurl http://diplomado-minio-45370e-147-93-118-204.traefik.me
-
-# 3. Comprobar estado del remote
-dvc remote list
-dvc status
-
-# 4. Descargar datasets y modelos desde MinIO
-dvc pull
-
-# 5. Subir datasets y modelos modificados a MinIO
-dvc push
-```
-
-### 5. Despliegue con Docker Compose
-
-El archivo `docker-compose.yml` orquesta los microservicios interconectados:
-1. `api`: Inferencia con FastAPI escuchando en `0.0.0.0:8502`.
-2. `dashboard`: Interfaz gráfica Streamlit escuchando en `0.0.0.0:8501`.
-
-#### Comandos de Docker Compose
-
-```bash
-# Construir las imágenes y levantar todos los microservicios en segundo plano
-docker compose up -d --build
-
-# Verificar el estado y salud de los contenedores
 docker compose ps
-
-# Visualizar logs en tiempo real del backend API
-docker compose logs -f api
-
-# Visualizar logs en tiempo real del frontend Streamlit
-docker compose logs -f dashboard
-
-# Detener los servicios
-docker compose down
-
-# Detener y remover volúmenes si se desea reiniciar datos
-docker compose down -v
 ```
 
-### 6. Accesos y URLs de los Servicios
+Detener los servicios:
 
-| Servicio | URL Local | Descripción |
-| :--- | :--- | :--- |
-| **Streamlit Dashboard** | [http://localhost:8501](http://localhost:8501) | Dashboard interactivo de diagnóstico predictivo y monitoreo |
-| **FastAPI Root Info** | [http://localhost:8502](http://localhost:8502) | Metadatos del microservicio de inferencia |
-| **FastAPI Health Check** | [http://localhost:8502/health](http://localhost:8502/health) | Estado operativo y modelo activo |
-| **FastAPI Swagger UI** | [http://localhost:8502/docs](http://localhost:8502/docs) | Documentación interactiva OpenAPI / Swagger |
-| **FastAPI Redoc** | [http://localhost:8502/redoc](http://localhost:8502/redoc) | Documentación estructurada Redoc |
-| **MinIO S3 API** | [http://localhost:9000](http://localhost:9000) | Endpoint S3 compatible para DVC y almacenamiento |
-| **MinIO Web Console** | [http://localhost:9001](http://localhost:9001) | Consola gráfica de administración de buckets y objetos |
+```bash
+docker compose down
+```
+
+### Opcion 2: Ejecucion Local con Entorno Virtual
+
+1. Crear y activar el entorno virtual de Python:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate   # En Linux/macOS
+# .venv\Scripts\Activate.ps1 # En Windows PowerShell
+```
+
+2. Instalar las dependencias del proyecto:
+
+```bash
+pip install -r requirements.txt
+pip install -e .
+```
+
+3. Iniciar los servicios en terminales separadas:
+
+```bash
+# Terminal 1: Iniciar API REST
+uvicorn services.api.main:app --host 0.0.0.0 --port 8502
+
+# Terminal 2: Iniciar Dashboard
+streamlit run services/dashboard/app.py --server.port 8501
+```
 
 ---
 
-## Tecnologías Utilizadas
+## Puntos de Acceso
 
-- **Arquitectura MLOps:** Microservicios desacoplados (Docker, Docker Compose)
-- **Almacenamiento y Versionamiento:** Git, DVC (Data Version Control), MinIO (S3 Compatible)
-- **Backend API REST:** FastAPI, Uvicorn, Pydantic
-- **Frontend Dashboard:** Streamlit, Plotly
-- **Machine Learning & Pipeline:** Scikit-Learn (Random Forest, Logistic Regression), XGBoost, Joblib
-- **Lenguaje y Procesamiento:** Python 3.12, Pandas, NumPy
-- **Pruebas y Calidad:** Pytest, Flake8, TestClient
-
----
-
-## Autor
-
-- **Erick Quiroz** - [GitHub Profile](https://github.com/Erick-Quiroz)
-- **Diplomado en Ciencia de Datos Aplicada**
+- **Interfaz de Usuario (Dashboard):** `http://localhost:8501`
+- **Servicio de Inferencia (API):** `http://localhost:8502`
+- **Documentacion OpenAPI (Swagger UI):** `http://localhost:8502/docs`
+- **Verificacion de Salud (Health Check):** `http://localhost:8502/health`

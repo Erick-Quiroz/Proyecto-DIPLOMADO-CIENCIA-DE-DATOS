@@ -61,3 +61,37 @@ def set_active_model(
         )
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get(
+    "/metrics",
+    summary="Consultar métricas de evaluación de modelos",
+    description="Devuelve las métricas de rendimiento en particiones de Validación (X_valid) y Prueba (X_test).",
+)
+def get_model_metrics() -> Dict[str, Any]:
+    import pandas as pd
+    from services.api.config import APIConfig
+
+    cfg = APIConfig()
+    eval_dir = cfg.base_dir / "results" / "evaluation"
+    stability_path = eval_dir / "diagnostico_estabilidad.csv"
+    comp_path = eval_dir / "tabla_comparacion_modelos.csv"
+
+    res: Dict[str, Any] = {
+        "status": "ok",
+        "validacion": [],
+        "prueba": [],
+    }
+
+    if stability_path.exists():
+        df_stab = pd.read_csv(stability_path, encoding="utf-8-sig")
+        val_mask = df_stab["particion"].isin(["Valid", "Validacion", "Validación"])
+        test_mask = df_stab["particion"].isin(["Test", "Prueba", "PRUEBA"])
+        res["validacion"] = df_stab[val_mask].to_dict(orient="records")
+        res["prueba"] = df_stab[test_mask].to_dict(orient="records")
+    elif comp_path.exists():
+        df_comp = pd.read_csv(comp_path, encoding="utf-8-sig")
+        res["prueba"] = df_comp.to_dict(orient="records")
+
+    return res
+

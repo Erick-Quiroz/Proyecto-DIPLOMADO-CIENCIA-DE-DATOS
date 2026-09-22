@@ -73,12 +73,26 @@ def test_set_active_model_endpoint():
     print("✓ test_set_active_model_endpoint PASÓ")
 
 
+def test_models_metrics_endpoint():
+    """Valida que GET /models/metrics devuelva las métricas de validación y prueba."""
+    response = client.get("/models/metrics")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "ok"
+    assert "validacion" in data
+    assert "prueba" in data
+    assert len(data["validacion"]) >= 3
+    assert len(data["prueba"]) >= 3
+    print("✓ test_models_metrics_endpoint PASÓ (Métricas de Validación y Prueba verificadas)")
+
+
 if __name__ == "__main__":
     print("\n" + "=" * 60)
     print("EJECUTANDO PRUEBAS UNITARIAS DE LA API FASTAPI (FASE 7.6)")
     print("=" * 60)
     test_health_endpoint()
     test_models_endpoint()
+    test_models_metrics_endpoint()
     test_predict_endpoint_valid()
     test_predict_endpoint_missing_features()
     test_set_active_model_endpoint()
